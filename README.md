@@ -1,7 +1,7 @@
 # Software Engineering Project 2022-2023
 
-Group: (your group goes here, example: softeng2022-00)
-Members: elYYNNN, elYYNNN, ... (replace YYNNN as needed. PLEASE keep this up-to-date)
+Group: softeng2022-21
+Members: el19058, el19646, el21724, el19112, el19067, el19952
   
   
   
