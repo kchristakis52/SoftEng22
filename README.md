@@ -2,7 +2,7 @@
 
 Group: softeng2022-21
 
-Members: elYYNNN, elYYNNN, ... (replace YYNNN as needed. PLEASE keep this up-to-date)
+Members: el19067, elYYNNN, elYYNNN, elYYNNN, elYYNNN, elYYNNN (replace YYNNN as needed. PLEASE keep this up-to-date)
 
 // test line
   
