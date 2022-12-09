@@ -1,7 +1,8 @@
 # Software Engineering Project 2022-2023
 
-Group: (your group goes here, example: softeng2022-00)
-Members: elYYNNN, elYYNNN, ... (replace YYNNN as needed. PLEASE keep this up-to-date)
+Group: softeng2022-21
+
+Members: Ιωάννης Μπέλλος el19067, Κωνσταντίνος Χριστάκης el19646, elYYNNN, elYYNNN, elYYNNN, elYYNNN (replace YYNNN as needed. PLEASE keep this up-to-date)
 
 // test line
 // test line 2
