@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, render_template
 
-app = Flask(__name__)
-
+# create app and set directory for html code (default is "./templates")
+app = Flask(__name__, template_folder="../frontend")
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def questionnaire_test():
+    return render_template("main.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
