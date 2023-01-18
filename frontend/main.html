@@ -85,7 +85,7 @@
 
 <body>
     <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
-    <form>
+    <form action="/submit" method="post">
         <h1>College Student Questionnaire</h1>
         <label for="question1">What is your major?</label>
         <input type="text" id="question1" name="question1" placeholder="Enter your major">
@@ -122,9 +122,30 @@
         <label for="question10">How satisfied are you with your college experience so far?</label>
         <input type="text" id="question10" name="question10" placeholder="Enter your satisfaction level">
         <br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" id="submit-button" value="Submit">
     </form>
     <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', handleSubmit);
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const inputValue = document.getElementById('question9').value;
+            const data = { input1: inputValue, input2 : inputValue };
+
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(responseData => {
+                    console.log(responseData);
+                });
+        }
+
         function changeTheme() {
             let body = document.querySelector("body");
             let btn = document.querySelector("#theme-btn");
