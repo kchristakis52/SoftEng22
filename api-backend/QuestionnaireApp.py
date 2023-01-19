@@ -6,7 +6,7 @@ app = Flask(__name__, template_folder="../frontend")
 
 @app.route("/")
 def questionnaire_test():
-    return render_template("index.html")
+    return render_template("main.html")
 
 
 if __name__ == '__main__':
