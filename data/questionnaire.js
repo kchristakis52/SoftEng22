@@ -18,7 +18,7 @@ db.questionnaire.insertOne({
     ],
     "questions": [
         {
-            "qID ": "P00",
+            "qID": "P00",
             "qtext": "Ποιο είναι το mail σας;",
             "required": "FALSE",
             "type": "profile",
@@ -31,7 +31,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "P01",
+            "qID": "P01",
             "qtext": "Ποια είναι η ηλικία σας;",
             "required": "TRUE",
             "type": "profile",
@@ -59,7 +59,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q01",
+            "qID": "Q01",
             "qtext": "Ποιο είναι το αγαπημένο σας χρώμα;",
             "required": "TRUE",
             "type": "question",
@@ -83,7 +83,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q02",
+            "qID": "Q02",
             "qtext": "Ασχολείστε με το ποδόσφαιρο;",
             "required": "TRUE",
             "type": "question",
@@ -101,7 +101,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q03",
+            "qID": "Q03",
             "qtext": "Τι ομάδα είστε;",
             "required": "TRUE",
             "type": "question",
@@ -124,7 +124,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q04",
+            "qID": "Q04",
             "qtext": "Έχετε ζήσει σε νησί;",
             "required": "TRUE",
             "type": "question",
@@ -143,7 +143,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q05",
+            "qID": "Q05",
             "qtext": "Με δεδομένο ότι απαντήσατε [*Q04A1] στην ερώτηση [*Q04]: Ποια η σχέση σας με το θαλάσσιο σκι;",
             "required": "TRUE",
             "type": "question",
@@ -166,7 +166,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q06",
+            "qID": "Q06",
             "qtext": "Είστε χειμερινός κολυμβητής",
             "required": "TRUE",
             "type": "question",
@@ -184,7 +184,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q07",
+            "qID": "Q07",
             "qtext": "Κάνετε χειμερινό σκι;",
             "required": "TRUE",
             "type": "question",
@@ -208,7 +208,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q08",
+            "qID": "Q08",
             "qtext": "Συμφωνείτε να αλλάζει η ώρα κάθε χρόνο;",
             "required": "TRUE",
             "type": "question",
@@ -226,7 +226,7 @@ db.questionnaire.insertOne({
             ]
         },
         {
-            "qID ": "Q09",
+            "qID": "Q09",
             "qtext": "Με δεδομένο ότι απαντήσατε [*Q08A2] στην ερώτηση [*Q08]: Προτιμάτε τη θερινή ή την χειμερινή ώρα;",
             "required": "TRUE",
             "type": "question",
