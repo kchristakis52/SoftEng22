@@ -8,15 +8,6 @@ app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
 db = client.queDB
 
-def parse(var):
-    var = var.split('?')
-    if len(var) == 1 or var[1] == "format=json":
-        return 0
-    elif var[1] == "format=csv":
-        return 1
-    else:
-        return 2
-
 @app.route("/")
 def questionnaire_test():
     return render_template("main.html")
