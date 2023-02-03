@@ -12,7 +12,7 @@ db = client.queDB
 def questionnaire_test():
     return render_template("main.html")
 
-
+#comment
 @app.route("/intelliq_api/questionnaire/<string:slug>", methods=["GET"])
 def get_questionnaire(slug):
     format = request.args.get('format', "json")
