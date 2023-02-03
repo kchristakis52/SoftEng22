@@ -250,170 +250,170 @@ db.questionnaire.insertOne({
     "_id": "QQ001",
     "questionnaireTitle": "Consumer Satisfaction Survey",
     "keywords": [
-        "customer satisfaction",
-        "product feedback",
-        "consumer experience"
+      "customer satisfaction",
+      "product feedback",
+      "consumer experience"
     ],
     "questions": [
-        {
-            "qID": "Q1",
-            "qtext": "How satisfied are you with the product you purchased?",
-            "required": "TRUE",
-            "type": "question",
-            "options": [
-                {
-                    "optID": "Q1A1",
-                    "opttxt": "Very satisfied",
-                    "nextqID": "Q2"
-                },
-                {
-                    "optID": "Q1A2",
-                    "opttxt": "Satisfied",
-                    "nextqID": "Q2"
-                },
-                {
-                    "optID": "Q1A3",
-                    "opttxt": "Neutral",
-                    "nextqID": "Q2"
-                },
-                {
-                    "optID": "Q1A4",
-                    "opttxt": "Dissatisfied",
-                    "nextqID": "Q2"
-                },
-                {
-                    "optID": "Q1A5",
-                    "opttxt": "Very dissatisfied",
-                    "nextqID": "Q2"
-                }
-            ]
-        },
-        {
-            "qID": "Q2",
-            "qtext": "What is the main reason for your satisfaction/dissatisfaction?",
-            "required": "TRUE",
-            "type": "question",
-            "options": [
-                {
-                    "optID": "Q2A1",
-                    "opttxt": "Product quality",
-                    "nextqID": "Q3"
-                },
-                {
-                    "optID": "Q2A2",
-                    "opttxt": "Price",
-                    "nextqID": "Q3"
-                },
-                {
-                    "optID": "Q2A3",
-                    "opttxt": "Customer service",
-                    "nextqID": "Q3"
-                },
-                {
-                    "optID": "Q2A4",
-                    "opttxt": "Delivery/shipping",
-                    "nextqID": "Q3"
-                },
-                {
-                    "optID": "Q2A5",
-                    "opttxt": "Other (please specify)",
-                    "nextqID": "Q3"
-                }
-            ]
-        },
-        {
-            "qID": "Q3",
-            "qtext": "Would you recommend this product to a friend?",
-            "required": "TRUE",
-            "type": "question",
-            "options": [
-                {
-                    "optID": "Q3A1",
-                    "opttxt": "Yes",
-                    "nextqID": "Q4"
-                },
-                {
-                    "optID": "Q3A2",
-                    "opttxt": "No",
-                    "nextqID": "Q4"
-                },
-                {
-                    "optID": "Q3A3",
-                    "opttxt": "Maybe",
-                    "nextqID": "Q4"
-                }
-            ]
-        },
-        {
-            "qID": "Q4",
-            "qtext": "Would you purchase this product again?",
-            "required": "TRUE",
-            "type": "question",
-            "options": [
-                {
-                    "optID": "Q4A1",
-                    "opttxt": "Yes",
-                    "nextqID": "Q5"
-                },
-                {
-                    "optID": "Q4A2",
-                    "opttxt": "No",
-                    "nextqID": "Q5"
-                },
-                {
-                    "optID": "Q4A3",
-                    "opttxt": "Maybe",
-                    "nextqID": "Q5"
-                }
-            ]
-        },
-        {
-            "qID": "Q5",
-            "qtext": "What would you rate the overall experience of purchasing this product on a scale of 1-5?",
-            "required": "TRUE",
-            "type": "question",
-            "options": [
-                {
-                    "optID": "Q5A1",
-                    "opttxt": "1",
-                    "nextqID": "Q6"
-                },
-                {
-                    "optID": "Q5A2",
-                    "opttxt": "2",
-                    "nextqID": "Q6"
-                },
-                {
-                    "optID": "Q5A3",
-                    "opttxt": "3",
-                    "nextqID": "Q6"
-                },
-                {
-                    "optID": "Q5A4",
-                    "opttxt": "4",
-                    "nextqID": "Q6"
-                },
-                {
-                    "optID": "Q5A5",
-                    "opttxt": "5",
-                    "nextqID": "Q6"
-                }
-            ]
-        },
-        {
-            "qID": "Q6",
-            "qtext": "Is there any other feedback or comments you would like to provide?",
-            "required": "FALSE",
-            "type": "question",
-            "options": [
-                {
-                    "optID": "Q6TXT",
-                    "opttxt": "<open text>",
-                }
-            ]
-        }
+      {
+        "qID": "Q1",
+        "qtext": "How satisfied are you with the product you purchased?",
+        "required": "TRUE",
+        "type": "question",
+        "options": [
+          {
+            "optID": "Q1A1",
+            "opttxt": "Very satisfied",
+            "nextqID": "Q2"
+          },
+          {
+            "optID": "Q1A2",
+            "opttxt": "Satisfied",
+            "nextqID": "Q2"
+          },
+          {
+            "optID": "Q1A3",
+            "opttxt": "Neutral",
+            "nextqID": "Q2"
+          },
+          {
+            "optID": "Q1A4",
+            "opttxt": "Dissatisfied",
+            "nextqID": "Q2"
+          },
+          {
+            "optID": "Q1A5",
+            "opttxt": "Very dissatisfied",
+            "nextqID": "Q2"
+          }
+        ]
+      },
+      {
+        "qID": "Q2",
+        "qtext": "What is the main reason for your satisfaction/dissatisfaction?",
+        "required": "TRUE",
+        "type": "question",
+        "options": [
+          {
+            "optID": "Q2A1",
+            "opttxt": "Product quality",
+            "nextqID": "Q3"
+          },
+          {
+            "optID": "Q2A2",
+            "opttxt": "Price",
+            "nextqID": "Q3"
+          },
+          {
+            "optID": "Q2A3",
+            "opttxt": "Customer service",
+            "nextqID": "Q3"
+          },
+          {
+            "optID": "Q2A4",
+            "opttxt": "Delivery/shipping",
+            "nextqID": "Q3"
+          },
+          {
+            "optID": "Q2A5",
+            "opttxt": "Other (please specify)",
+            "nextqID": "Q3"
+          }
+        ]
+      },
+      {
+        "qID": "Q3",
+        "qtext": "Would you recommend this product to a friend?",
+        "required": "TRUE",
+        "type": "question",
+        "options": [
+          {
+            "optID": "Q3A1",
+            "opttxt": "Yes",
+            "nextqID": "Q4"
+          },
+          {
+            "optID": "Q3A2",
+            "opttxt": "No",
+            "nextqID": "Q4"
+          },
+          {
+            "optID": "Q3A3",
+            "opttxt": "Maybe",
+            "nextqID": "Q4"
+          }
+        ]
+      },
+      {
+        "qID": "Q4",
+        "qtext": "Would you purchase this product again?",
+        "required": "TRUE",
+        "type": "question",
+        "options": [
+          {
+            "optID": "Q4A1",
+            "opttxt": "Yes",
+            "nextqID": "Q5"
+          },
+          {
+            "optID": "Q4A2",
+            "opttxt": "No",
+            "nextqID": "Q5"
+          },
+          {
+            "optID": "Q4A3",
+            "opttxt": "Maybe",
+            "nextqID": "Q5"
+          }
+        ]
+      },
+      {
+        "qID": "Q5",
+        "qtext": "What would you rate the overall experience of purchasing this product on a scale of 1-5?",
+        "required": "TRUE",
+        "type": "question",
+        "options": [
+          {
+            "optID": "Q5A1",
+            "opttxt": "1",
+            "nextqID": "Q6"
+          },
+          {
+            "optID": "Q5A2",
+            "opttxt": "2",
+            "nextqID": "Q6"
+          },
+          {
+            "optID": "Q5A3",
+            "opttxt": "3",
+            "nextqID": "Q6"
+          },
+          {
+            "optID": "Q5A4",
+            "opttxt": "4",
+            "nextqID": "Q6"
+          },
+          {
+            "optID": "Q5A5",
+            "opttxt": "5",
+            "nextqID": "Q6"
+          }
+        ]
+      },
+      {
+        "qID": "Q6",
+        "qtext": "Is there any other feedback or comments you would like to provide?",
+        "required": "FALSE",
+        "type": "question",
+        "options": [
+          {
+            "optID": "Q6TXT",
+            "opttxt": "<open text>"
+          }
+        ]
+      }
     ]
-})
+  })
 
 db.responses.insertOne({
     "questionnaireID": "QQ000",
