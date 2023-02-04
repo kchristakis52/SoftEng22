@@ -89,7 +89,7 @@ def doanswer(questionnaire_id, question_id, session_id, option_id):
 @cli.command()
 @click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
 @click.option('--session_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-def getsessionanswers(questionnaire_id,session_id):
+def getsessionanswers(questionnaire_id, session_id):
     """<Replace with the command description>"""
     pass
 
