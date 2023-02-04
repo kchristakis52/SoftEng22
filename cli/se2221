@@ -1,0 +1,140 @@
+#!/bin/python3
+## Linux
+# The first line is used to make the file executable as a bash script
+# using the command: ./se2221 [OPTIONS] COMMAND [ARGS]...
+# make it executable: chmod +x se2221
+## Windows
+# The first line does not affect the programm, it is treated as comment
+# run script as python script: python3 se2221 [OPTIONS] COMMAND [ARGS]...
+
+import click
+import requests
+
+api_url = "http://127.0.0.1:9103/intelliq_api"
+
+@click.group()
+def cli():
+    """CLI for Questionnaire API"""
+    pass
+
+@cli.command()
+@click.option('--username', prompt='Username', help='Username.')
+@click.option('--passw', prompt='Password', help='Password.', hide_input=True, confirmation_prompt=True)
+def login(username, passw):
+    """Login to Questionnaire"""
+    url = api_url + "/login"
+
+    payload = {
+        "username": username,
+        "password": passw
+    }
+    response = requests.post(url, data=payload)
+
+    click.echo(response)
+    """
+    if response!="Success":
+        click.echo(click.style('Invalid Credentials', fg='red', bold=True))
+        exit()
+    """
+
+@cli.command()
+def logout():
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+def healthcheck():
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+def resetall():
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--source', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def questionnaire_upd(source):
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def resetq(questionnaire_id):
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def questionnaire(questionnaire_id):
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--question_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def question(questionnaire_id, question_id):
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--question_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--session_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--option_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def doanswer(questionnaire_id, question_id, session_id, option_id):
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--session_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def getsessionanswers(questionnaire_id,session_id):
+    """<Replace with the command description>"""
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--question_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def getquestionanswers(questionnaire_id, question_id):
+    """<Replace with the command description>"""
+    pass
+
+
+# !!!
+# Admin's command structure is not developed yet
+# We have 2 options
+# 1) use usermod, username, ... etc as sub-commands (and take their own paremeters)
+# 2) use --usermod, --username, ... etc as parameters of admin command
+#    while their "sub-parameters" will also be parameters of admin command 
+@cli.group()
+def admin():
+    """<Replace with the command description>"""
+    pass
+
+
+@admin.command(name='--usermod')
+@click.option('--username', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--passw', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def usermod(username, passw):
+    """<Replace with the command description>"""
+    pass
+
+@admin.command(name='--username')
+@click.option('--passw', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+def username(passw):
+    """<Replace with the command description>"""
+    pass
+
+@admin.command(name='--passw')
+def passw():
+    """<Replace with the command description>"""
+    pass
+
+@admin.command(name='--users')
+def users():
+    """<Replace with the command description>"""
+    pass
+
+if __name__ == '__main__':
+    cli()
