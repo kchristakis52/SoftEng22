@@ -68,7 +68,11 @@ def resetq(questionnaire_id):
 @click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
 def questionnaire(questionnaire_id):
     """<Replace with the command description>"""
+    url = api_url + "/questionnaire/" + questionnaire_id
+    response = requests.get(url)
+    click.echo(response.text)
     pass
+
 #Dyo
 @cli.command()
 @click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
