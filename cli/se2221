@@ -57,13 +57,13 @@ def resetall():
 def questionnaire_upd(source):
     """<Replace with the command description>"""
     pass
-#Ena
+
 @cli.command()
 @click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
 def resetq(questionnaire_id):
     """<Replace with the command description>"""
     pass
-
+#Ena
 @cli.command()
 @click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
 def questionnaire(questionnaire_id):
