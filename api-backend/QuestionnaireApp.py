@@ -10,7 +10,10 @@ db = client.queDB
 #vlaks
 @app.route("/")
 def questionnaire_test():
-    return render_template("main.html")
+    questionnaires = []
+    for questr in db.questionnaire.find():
+        questionnaires.append((questr['_id'], questr['questionnaireTitle']))
+    return render_template("main.html", questionnaires=questionnaires)
 
 
 @app.route("/intelliq_api/questionnaire/<string:slug>", methods=["GET"])
