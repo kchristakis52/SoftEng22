@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <title>College Student Questionnaire</title> -->
+    {% block title %} {% endblock %}
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Center the form on the page */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 50px;
+        }
+
+        /* Style the form inputs and labels */
+        input[type="text"],
+        select {
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="radio"] {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        label {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        /* Style the submit button */
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Style the heading */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 40px;
+        }
+
+        /* Style the theme switch button */
+        #theme-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        #theme-btn:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
+    {% block content %} {% endblock %}
+    <script>
+        function changeTheme() {
+            let body = document.querySelector("body");
+            let btn = document.querySelector("#theme-btn");
+            if (body.classList.contains("dark-mode")) {
+                body.classList.remove("dark-mode");
+                btn.innerHTML = "Dark Mode";
+            } else {
+                body.classList.add("dark-mode");
+                btn.innerHTML = "Light Mode";
+            }
+        }
+    </script>
+    <style>
+        /* Add dark mode styles */
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode input[type="text"],
+        .dark-mode select {
+            border-color: #fff;
+        }
+
+        .dark-mode input[type="submit"] {
+            background-color: rgb(24, 81, 100);
+        }
+
+        .dark-mode input[type="submit"]:hover {
+            background-color: rgb(20, 69, 85);
+        }
+    </style>
+</body>
+
+</html>
