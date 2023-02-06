@@ -1,0 +1,60 @@
+<style>
+  form {
+    width: 500px;
+    margin: 50px auto;
+    text-align: center;
+  }
+  p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  .checkbox-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  input[type="radio"] {
+    margin-right: 10px;
+  }
+  input[type="submit"] {
+    width: 200px;
+    padding: 10px 20px;
+    background-color: #3f51b5;
+    color: #ffffff;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+</style>
+
+<form>
+  <p>Question goes here?</p>
+  <div class="checkbox-container">
+    <div class="checkbox-label">
+      <input type="radio" id="answer1" name="answer" value="Option 1">
+      <label for="answer1">Option 1</label>
+    </div>
+    <div class="checkbox-label">
+      <input type="radio" id="answer2" name="answer" value="Option 2">
+      <label for="answer2">Option 2</label>
+    </div>
+    <div class="checkbox-label">
+      <input type="radio" id="answer3" name="answer" value="Option 3">
+      <label for="answer3">Option 3</label>
+    </div>
+    <div class="checkbox-label">
+      <input type="radio" id="answer4" name="answer" value="Option 4">
+      <label for="answer4">Option 4</label>
+    </div>
+  </div>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
