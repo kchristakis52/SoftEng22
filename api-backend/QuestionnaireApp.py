@@ -7,7 +7,7 @@ import flask_pymongo
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
 db = client.queDB
-#vlaks
+
 @app.route("/")
 def questionnaire_test():
     questionnaires = []
