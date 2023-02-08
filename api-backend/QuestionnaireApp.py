@@ -35,7 +35,7 @@ def setRadioQuestion(questionnaire_id ,question_id):
     questionForm = list(db.questionnaire.aggregate([{'$match':{'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset':['keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID','qtext': '$questions.qtext','required': '$questions.required','type': '$questions.type','options': '$questions.options'}}]))
     print(len(questionForm[0].get('options')))#Gia svisimo
     if (questionForm[0].get('options')[0].get('optID'))[3] == 'T' or (questionForm[0].get('options')[0].get('optID'))[3] == 'X':
-        return render_template("question_textfield.html", Question=questionForm[0].get('qtext'))
+        return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'))
     else:
         for i in range(len(questionForm[0].get('options'))):  
             qOptions.append(questionForm[0].get('options')[i].get('opttxt'))
