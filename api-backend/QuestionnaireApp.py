@@ -90,12 +90,12 @@ def postreponse(questionnaireID, questionID, session, optionID):
     })
 
 
-# The aboveees are APIs                  --/\--
+# The aboves are APIs                  --/\--
 #                                          ||
 #                                          ||
 #                                                              ||
 #                                                              ||
-# The belowees are pages of the website                      --\/--
+# The belows are pages of the website                      --\/--
 
 
 @app.route("/RadioQuestion/<string:questionnaire_id>/<string:question_id>")
