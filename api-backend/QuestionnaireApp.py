@@ -39,7 +39,7 @@ def setRadioQuestion(questionnaire_id ,question_id):
     for x in range(len(questionForm[0].get('options'))):
         qNextIDs.append('None')
     if (questionForm[0].get('options')[0].get('optID'))[3] == 'T' or (questionForm[0].get('options')[0].get('optID'))[3] == 'X':
-        return render_template("question_textfield.html", Question=questionForm[0].get('qtext'))
+        return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'))
     else:
         for i in range(len(questionForm[0].get('options'))):  
             qOptions[i] = questionForm[0].get('options')[i].get('opttxt')
