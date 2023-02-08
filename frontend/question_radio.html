@@ -39,30 +39,12 @@
 <form>
   <p>{{Question}}</p>
   <div class="checkbox-container">
+    {% for qst in qOptions %}
     <div class="checkbox-label">
       <input type="radio" id="answer1" name="answer" value="Option 1">
-      <label for="answer1">{{Option1}}</label>
+      <label for="answer1">{{qst}}</label>
     </div>
-    <div class="checkbox-label">
-      <input type="radio" id="answer2" name="answer" value="Option 2">
-      <label for="answer2">{{Option2}}</label>
-    </div>
-    <div class="checkbox-label">
-      <input type="radio" id="answer3" name="answer" value="Option 3">
-      <label for="answer3">{{Option3}}</label>
-    </div>
-    <div class="checkbox-label">
-      <input type="radio" id="answer4" name="answer" value="Option 4">
-      <label for="answer4">{{Option4}}</label>
-    </div>
-    <div class="checkbox-label">
-      <input type="radio" id="answer5" name="answer" value="Option 4">
-      <label for="answer4">{{Option5}}</label>
-    </div>
-    <div class="checkbox-label">
-      <input type="radio" id="answer6" name="answer" value="Option 4">
-      <label for="answer4">{{Option6}}</label>
-    </div>
+    {% endfor %}
   </div>
   <br><br>
   <input type="submit" value="Submit">
