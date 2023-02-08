@@ -1,62 +1,95 @@
-{% extends 'base.html' %}
-
-{% block title %}
-    <title>College Student Questionnaire</title>
-{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}
+<title>College Student Questionnaire</title>
+{% endblock %} {% block content %}
 <form>
-    <h1>College Student Questionnaire</h1>
-    
-    <h2>Choose the questionnaire you want to answer</h2>
-    <ul>
-        {% for item in questionnaires %}
-        <!--- The target URL will change to a new one(this is reserved for the api) -->
-        <!--<li><a href="intelliq_api/questionnaire/{{ item[0] }}">{{ item[1] }}</a></li>-->
-        <li><a href="/RadioQuestion/{{item[0]}}/{{item[2]}}">{{item[1]}}</a></li>
-        
-        {% endfor %}
-        <li><a href="/RadioQuestion/QQOO1/Q1">Νέα Ερώτηση</a></li>
-    </ul>
+  <h1>College Student Questionnaire</h1>
 
-    <label for="question1">What is your major?</label>
-    <input type="text" id="question1" name="question1" placeholder="Enter your major">
-    <br><br>
-    <label for="question2">What is your current GPA?</label>
-    <input type="text" id="question2" name="question2" placeholder="Enter your current GPA">
-    <br><br>
-    <label for="question3">How many hours do you typically study per week?</label>
-    <input type="text" id="question3" name="question3" placeholder="Enter number of hours">
-    <br><br>
-    <label for="question4">How many extracurricular activities are you involved in?</label>
-    <input type="text" id="question4" name="question4" placeholder="Enter number of activities">
-    <br><br>
-    <label for="question5">Are you currently working?</label>
-    <input type="radio" id="question5" name="question5" value="yes"> Yes
-    <input type="radio" id="question5" name="question5" value="no"> No
-    <br><br>
-    <label for="question6">How many hours do you work per week?</label>
-    <input type="text" id="question6" name="question6" placeholder="Enter number of hours">
-    <br><br>
-    <label for="question7">Do you live on campus or off campus?</label>
-    <select id="question7" name="question7">
-        <option value="on-campus">On-campus</option>
-        <option value="off-campus">Off-campus</option>
-    </select>
-    <br><br>
-    <label for="question8">Do you receive financial aid?</label>
-    <input type="radio" id="question8" name="question8" value="yes"> Yes
-    <input type="radio" id="question8" name="question8" value="no"> No
-    <br><br>
-    <label for="question9">What is your current living situation?</label>
-    <input type="text" id="question9" name="question9" placeholder="Enter your current living situation">
-    <br><br>
-    <label for="question10">How satisfied are you with your college experience so far?</label>
-    <input type="text" id="question10" name="question10" placeholder="Enter your satisfaction level">
-    <br><br>
-    <input type="submit" value="Submit">
-    <br><br>
+  <h2>Choose the questionnaire you want to answer</h2>
+  <ul>
+    {% for item in questionnaires %}
+    <!--- The target URL will change to a new one(this is reserved for the api) -->
+    <!--<li><a href="intelliq_api/questionnaire/{{ item[0] }}">{{ item[1] }}</a></li>-->
+    <li><a href="/RadioQuestion/{{item[0]}}/{{item[2]}}">{{item[1]}}</a></li>
 
-    
+    {% endfor %}
+    <li><a href="/RadioQuestion/QQOO1/Q1">Νέα Ερώτηση</a></li>
+  </ul>
+
+  <label for="question1">What is your major?</label>
+  <input
+    type="text"
+    id="question1"
+    name="question1"
+    placeholder="Enter your major"
+  />
+  <br /><br />
+  <label for="question2">What is your current GPA?</label>
+  <input
+    type="text"
+    id="question2"
+    name="question2"
+    placeholder="Enter your current GPA"
+  />
+  <br /><br />
+  <label for="question3">How many hours do you typically study per week?</label>
+  <input
+    type="text"
+    id="question3"
+    name="question3"
+    placeholder="Enter number of hours"
+  />
+  <br /><br />
+  <label for="question4"
+    >How many extracurricular activities are you involved in?</label
+  >
+  <input
+    type="text"
+    id="question4"
+    name="question4"
+    placeholder="Enter number of activities"
+  />
+  <br /><br />
+  <label for="question5">Are you currently working?</label>
+  <input type="radio" id="question5" name="question5" value="yes" /> Yes
+  <input type="radio" id="question5" name="question5" value="no" /> No
+  <br /><br />
+  <label for="question6">How many hours do you work per week?</label>
+  <input
+    type="text"
+    id="question6"
+    name="question6"
+    placeholder="Enter number of hours"
+  />
+  <br /><br />
+  <label for="question7">Do you live on campus or off campus?</label>
+  <select id="question7" name="question7">
+    <option value="on-campus">On-campus</option>
+    <option value="off-campus">Off-campus</option>
+  </select>
+  <br /><br />
+  <label for="question8">Do you receive financial aid?</label>
+  <input type="radio" id="question8" name="question8" value="yes" /> Yes
+  <input type="radio" id="question8" name="question8" value="no" /> No
+  <br /><br />
+  <label for="question9">What is your current living situation?</label>
+  <input
+    type="text"
+    id="question9"
+    name="question9"
+    placeholder="Enter your current living situation"
+  />
+  <br /><br />
+  <label for="question10"
+    >How satisfied are you with your college experience so far?</label
+  >
+  <input
+    type="text"
+    id="question10"
+    name="question10"
+    placeholder="Enter your satisfaction level"
+  />
+  <br /><br />
+  <input type="submit" value="Submit" />
+  <br /><br />
 </form>
 {% endblock %}
