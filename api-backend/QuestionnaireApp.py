@@ -3,6 +3,17 @@ import csv
 import pymongo
 import flask_pymongo
 
+def normalize_json(data: dict) -> dict:
+    new_data = dict()
+    for key, value in data.items():
+        if not isinstance(value, dict):
+            new_data[key] = value
+        else:
+            for k, v in value.items():
+                new_data[key + "_" + k] = v
+      
+    return new_data
+
 # create app and set directory for html code (default is "./templates")
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
@@ -28,6 +39,8 @@ def get_questionnaire(slug):
         return "No data", 402
     for question in questionnaire["questions"]:
         del question["options"]
+    if (format=="csv"):
+        return 
     return jsonify(questionnaire), 200
 
 
