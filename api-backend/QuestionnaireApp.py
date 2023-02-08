@@ -34,18 +34,13 @@ def setRadioQuestion(questionnaire_id ,question_id):
     qNextIDs = []
     questionForm = list(db.questionnaire.aggregate([{'$match':{'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset':['keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID','qtext': '$questions.qtext','required': '$questions.required','type': '$questions.type','options': '$questions.options'}}]))
     print(len(questionForm[0].get('options')))#Gia svisimo
-    for x in range(len(questionForm[0].get('options'))):
-        qOptions.append('None')
-    for x in range(len(questionForm[0].get('options'))):
-        qNextIDs.append('None')
     if (questionForm[0].get('options')[0].get('optID'))[3] == 'T' or (questionForm[0].get('options')[0].get('optID'))[3] == 'X':
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'))
     else:
         for i in range(len(questionForm[0].get('options'))):  
-            qOptions[i] = questionForm[0].get('options')[i].get('opttxt')
-        for j in range(len(questionForm[0].get('options'))):  
-            qNextIDs[j] = questionForm[0].get('options')[j].get('nextqID')
-            print(qNextIDs[j]) # gia svisimo
+            qOptions.append(questionForm[0].get('options')[i].get('opttxt'))
+            qNextIDs.append(questionForm[0].get('options')[i].get('nextqID'))
+            #print(qNextIDs[j]) # gia svisimo
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'),qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs)
 
 
