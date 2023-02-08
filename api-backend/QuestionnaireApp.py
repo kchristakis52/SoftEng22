@@ -45,6 +45,7 @@ def setRadioQuestion(questionnaire_id ,question_id):
             qOptions[i] = questionForm[0].get('options')[i].get('opttxt')
         for j in range(len(questionForm[0].get('options'))):  
             qNextIDs[j] = questionForm[0].get('options')[j].get('nextqID')
+            print(qNextIDs[j]) # gia svisimo
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'),qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs)
 
 

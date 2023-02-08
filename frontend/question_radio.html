@@ -36,17 +36,23 @@
 </style>
 <!--{{qNextIDs}}-->
 
-<form action="/RadioQuestion/{{questionnaire_id}}/{{Nextquestion_id}} ">
+<form id="myForm" action="/RadioQuestion/{{questionnaire_id}}/{{Nextquestion_id}} ">
   <p>{{Question}}</p>
   <div class="checkbox-container">
     {% for qst in qOptions %}
     <div class="checkbox-label">
-      <input type="radio" id="answer{{loop.index}}" name="answer" value="Option {{loop.index}}">
+      <input type="radio" id="answer{{loop.index}}" name="answer" value="{{loop.index}}" onclick="changeAction('/RadioQuestion/{{ questionnaire_id }}/{{ qNextIDs[loop.index] }}')">
       <label for="answer1">{{qst}}</label>
     </div>
     {% endfor %}
   </div>
   <br><br>
-  
+   <!-- Nextquestion_id[value] -->
     <input type="submit" value="Submit">
 </form>
+
+<script>
+  function changeAction(url) {
+    document.getElementById("myForm").action = url;
+  }
+</script>
