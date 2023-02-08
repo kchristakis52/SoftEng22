@@ -34,19 +34,19 @@
     margin-top: 20px;
   }
 </style>
+<!--{{qNextIDs}}-->
 
-
-<form>
+<form action="/RadioQuestion/{{questionnaire_id}}/{{Nextquestion_id}} ">
   <p>{{Question}}</p>
   <div class="checkbox-container">
     {% for qst in qOptions %}
     <div class="checkbox-label">
-      <input type="radio" id="answer1" name="answer" value="Option 1">
+      <input type="radio" id="answer{{loop.index}}" name="answer" value="Option {{loop.index}}">
       <label for="answer1">{{qst}}</label>
     </div>
     {% endfor %}
   </div>
   <br><br>
-  <a href="/RadioQuestion/{{questionnaire_id}}/{{Nextquestion_id}}">
-    <input type="submit" value="Submit"></a>
+  
+    <input type="submit" value="Submit">
 </form>
