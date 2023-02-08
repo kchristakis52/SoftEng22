@@ -35,7 +35,7 @@ def setRadioQuestion(questionnaire_id ,question_id):
     print(len(questionForm[0].get('options')))#Gia svisimo
     for x in range(len(questionForm[0].get('options'))):
         qOptions.append('None')
-    if (questionForm[0].get('options')[0].get('optID'))[3] == 'T' or (questionForm[0].get('options')[0].get('optID'))[3] == 'X':
+    if (questionForm[0].get('options')[0].get('opttxt') == "<open text>"):
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'))
     else:
         for i in range(len(questionForm[0].get('options'))):  
