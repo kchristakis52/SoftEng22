@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template
-
+from flask import Flask, request, render_template, jsonify
+import csv
 import pymongo
 import flask_pymongo
 
@@ -7,6 +7,7 @@ import flask_pymongo
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
 db = client.queDB
+app.config['JSON_AS_ASCII'] = False
 
 @app.route("/")
 def questionnaire_test():
@@ -27,7 +28,7 @@ def get_questionnaire(slug):
         return "No data", 402
     for question in questionnaire["questions"]:
         del question["options"]
-    return questionnaire, 200
+    return jsonify(questionnaire), 200
 
 
 @app.route("/RadioQuestion/<string:questionnaire_id>/<string:question_id>")
@@ -56,7 +57,7 @@ def get_questionnairequestion(slug1, slug2):
                     '$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
     if (not bool(question)):
         return "No data", 402
-    return question, 200
+    return jsonify(question[0]), 200
 
 
 @app.route("/intelliq_api/getsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
@@ -85,19 +86,21 @@ def get_sessionanswers(slug1, slug2):
             }
         }
     ]))
-    
+
     if (not bool(question)):
         return "No data", 402
     return question, 200
 
+
 @app.route("/intelliq_api/doanswer/<string:questionnaireID>/<string:questionID>/<string:session>/<string:optionID>", methods=["POST"])
-def postreponse(questionnaireID,questionID,session,optionID):
+def postreponse(questionnaireID, questionID, session, optionID):
     db.responses.insert_one({
-    "questionnaireID": questionnaireID,
-    "session": session,
-    "qID": questionID,
-    "ans": optionID
-  })
-    
+        "questionnaireID": questionnaireID,
+        "session": session,
+        "qID": questionID,
+        "ans": optionID
+    })
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=9103)
