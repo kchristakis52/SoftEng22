@@ -40,7 +40,7 @@ def setRadioQuestion(questionnaire_id ,question_id):
     else:
         for i in range(len(questionForm[0].get('options'))):  
             qOptions[i] = questionForm[0].get('options')[i].get('opttxt')
-        return render_template("question_radio.html", Question=questionForm[0].get('qtext'),qOptions=qOptions )
+        return render_template("question_radio.html", Question=questionForm[0].get('qtext'),qOptions=qOptions, questionnaire_id=questionnaire_id, Nextquestion_id='Q3' )
 
 
 @app.route("/intelliq_api/question/<string:slug1>/<string:slug2>", methods=["GET"])
