@@ -122,7 +122,7 @@
             id="answer{{loop.index0}}"
             name="answer"
             value="{{loop.index0}}"
-            onclick="changeAction('/RadioQuestion/{{session_id}}/{{ questionnaire_id }}/{{ qNextIDs[loop.index0] }}'); fetch('/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/{{qDiffOptions[loop.index0]}}', {method:POST})"
+            onclick="changeAction('/RadioQuestion/{{session_id}}/{{ questionnaire_id }}/{{ qNextIDs[loop.index0] }}'); fetch('http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/{{qDiffOptions[loop.index0]}}', {method:'POST'})"
           />
           <label for="answer1">{{qst}}</label>
         </div>
