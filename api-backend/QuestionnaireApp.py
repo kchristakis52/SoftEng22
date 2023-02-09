@@ -161,9 +161,21 @@ def session_answers(slug1, slug2):
     string = response.read().decode('utf-8')
     session_dict = json.loads(string)
 
-
+    for j in session_dict['answers']:
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
+        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
+        string2 = response2.read().decode('utf-8')
+        bigQuestion =  json.loads(string2)
+        j['qID'] = bigQuestion['qtext']
+        for k in bigQuestion['options']:
+            if k['optID'] == j['ans']:
+                j['ans']=k['opttxt']
+    
+    
+    for i in session_dict['answers']:
+        print(i)
     print(session_dict)
-    return 200
+    return ('',200)
 
 
 
