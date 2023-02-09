@@ -175,7 +175,7 @@ def session_answers(slug1, slug2):
     for i in session_dict['answers']:
         print(i)
     print(session_dict)
-    return ('',200)
+    return render_template("session_answers.html", session_dict=session_dict)
 
 
 
