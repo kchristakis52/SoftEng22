@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, Response
 import csv
 import pymongo
 import flask_pymongo
@@ -122,7 +122,7 @@ def postreponse(questionnaireID, questionID, session, optionID):
         "qID": questionID,
         "ans": optionID
     })
-    return None
+    return Response(status = 204)
 
 
 # The aboves are APIs                    --/\--
