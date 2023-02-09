@@ -3,7 +3,9 @@ import csv
 import pymongo
 import flask_pymongo
 import uuid
-
+import urllib
+import json
+from urllib.request import urlopen
 
 def normalize_json(data: dict) -> dict:
     new_data = dict()
@@ -152,10 +154,17 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
 
-@app.route("/getsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
+@app.route("/intelliq_api/showsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def session_answers(slug1, slug2):
-    ses_ans = get_sessionanswers(slug1, slug2)
-    pass
+    url = "http://127.0.0.1:9103/intelliq_api/getsessionanswers/" + slug1 + '/' + slug2
+    response = urlopen(url)    # Convert bytes to string type and string type to dict
+    string = response.read().decode('utf-8')
+    session_dict = json.loads(string)
+
+
+    print(session_dict)
+    return 200
+
 
 
 @app.route("/")
