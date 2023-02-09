@@ -139,8 +139,16 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     qOptions = []  # Yes No Maybe
     qNextIDs = []  # Next question is nextqID
     qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
-    questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
-                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
+
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaire_id + '/' + question_id
+    response = urlopen(url)    # Convert bytes to string type and string type to dict
+    string = response.read().decode('utf-8')
+    questionForm = json.loads(string)
+    questionForm = [questionForm]
+
+#    questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
+#                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
+
     print(len(questionForm[0].get('options')))  # Gia svisimo
     if (questionForm[0].get('options')[0].get('optID'))[3] == 'T' or (questionForm[0].get('options')[0].get('optID'))[3] == 'X':
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'), optionID=questionForm[0].get('options')[0].get('optID'), question_id=question_id, session_id=session_id)
@@ -161,8 +169,21 @@ def session_answers(slug1, slug2):
     string = response.read().decode('utf-8')
     session_dict = json.loads(string)
 
+    for j in session_dict['answers']:
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
+        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
+        string2 = response2.read().decode('utf-8')
+        bigQuestion =  json.loads(string2)
+        j['qID'] = bigQuestion['qtext']
+        for k in bigQuestion['options']:
+            if k['optID'] == j['ans']:
+                j['ans']=k['opttxt']
+    
+    
+    for i in session_dict['answers']:
+        print(i)
     print(session_dict)
-    return 200
+    return render_template("session_answers.html", session_dict=session_dict)
 
 
 @app.route("/")
