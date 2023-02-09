@@ -77,7 +77,7 @@ def get_sessionanswers(slug1, slug2):
 
     if (not bool(question)):
         return "No data", 402
-    return question, 200
+    return jsonify(question[0]), 200
 
 
 @app.route("/intelliq_api/doanswer/<string:questionnaireID>/<string:questionID>/<string:session>/<string:optionID>", methods=["POST"])
@@ -88,6 +88,7 @@ def postreponse(questionnaireID, questionID, session, optionID):
         "qID": questionID,
         "ans": optionID
     })
+    return None
 
 
 # The aboves are APIs                    --/\--
