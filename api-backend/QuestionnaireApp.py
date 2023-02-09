@@ -134,7 +134,7 @@ def postreponse(questionnaireID, questionID, session, optionID):
 # The belows are pages of the website                        --\/--
 
 
-@app.route("/RadioQuestion/<string:session_id>/<string:questionnaire_id>/<string:question_id>")
+@app.route("/intelliq_api/answerquestion/<string:session_id>/<string:questionnaire_id>/<string:question_id>")
 def setRadioQuestion(questionnaire_id, question_id, session_id):
     qOptions = []  # Yes No Maybe
     qNextIDs = []  # Next question is nextqID
@@ -150,7 +150,7 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
 #                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
 
     print(len(questionForm[0].get('options')))  # Gia svisimo
-    if (questionForm[0].get('options')[0].get('opttxt')) == "<open string>":
+    if (len(questionForm[0].get('options'))) == 1:
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'), optionID=questionForm[0].get('options')[0].get('optID'), question_id=question_id, session_id=session_id)
     else:
         for i in range(len(questionForm[0].get('options'))):

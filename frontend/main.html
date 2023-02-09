@@ -9,7 +9,7 @@
     {% for item in questionnaires %}
     <!--- The target URL will change to a new one(this is reserved for the api) -->
     <!--<li><a href="intelliq_api/questionnaire/{{ item[0] }}">{{ item[1] }}</a></li>-->
-    <li><a href="/RadioQuestion/{{session_id}}/{{item[0]}}/{{item[2]}}">{{item[1]}}</a></li>
+    <li><a href="/intelliq_api/answerquestion/{{session_id}}/{{item[0]}}/{{item[2]}}">{{item[1]}}</a></li>
 
     {% endfor %}
   </ul>
