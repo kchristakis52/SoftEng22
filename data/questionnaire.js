@@ -67,7 +67,6 @@ db.questionnaire.insertOne({
                 {
                     "optID": "Q01A1",
                     "opttxt": "Πράσινο",
-
                     "nextqID": "Q02"
                 },
                 {
