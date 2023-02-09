@@ -152,6 +152,12 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
 
+@app.route("/getsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
+def session_answers(slug1, slug2):
+    ses_ans = get_sessionanswers(slug1, slug2)
+    pass
+
+
 @app.route("/")
 def questionnaire_test():
     session_id = str(uuid.uuid4())[:4]
