@@ -23,8 +23,12 @@ def get_questionnaire(slug):
     for question in questionnaire["questions"]:
         del question["options"]
     if (format == "csv"):
+        concatstring = ''
+        for i in questionnaire['keywords']:
+            concatstring += i+" "
+        questionnaire['keywords']=concatstring
         df = pd.json_normalize(questionnaire, record_path=['questions'], meta=[
-                               '_id', 'questionnaireTitle'])
+                               '_id', 'questionnaireTitle', 'keywords'])
         return Response(df.to_csv(), mimetype="text/csv", status=200)
     return jsonify(questionnaire), 200
 
