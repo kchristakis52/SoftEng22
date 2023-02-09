@@ -4,6 +4,7 @@ import pymongo
 import flask_pymongo
 import uuid
 
+
 def normalize_json(data: dict) -> dict:
     new_data = dict()
     for key, value in data.items():
@@ -12,8 +13,9 @@ def normalize_json(data: dict) -> dict:
         else:
             for k, v in value.items():
                 new_data[key + "_" + k] = v
-      
+
     return new_data
+
 
 # create app and set directory for html code (default is "./templates")
 app = Flask(__name__, template_folder="../frontend")
@@ -32,8 +34,8 @@ def get_questionnaire(slug):
         return "No data", 402
     for question in questionnaire["questions"]:
         del question["options"]
-    if (format=="csv"):
-        return 
+    if (format == "csv"):
+        return
     return jsonify(questionnaire), 200
 
 
@@ -80,6 +82,37 @@ def get_sessionanswers(slug1, slug2):
         return "No data", 402
     return jsonify(question[0]), 200
 
+@app.route("/intelliq_api/getquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
+def get_questionanswers(slug1, slug2):
+    format = request.args.get('format', "json")
+    if format != "json" and format != "csv":
+        return "Bad request", 400
+    question = list(db.responses.aggregate([
+        {
+            '$match': {
+                'questionnaireID': slug1,
+                'qID': slug2
+            }
+        }, {
+            '$group': {
+                '_id': '$questionnaireID',
+                'qID': {
+                    '$first': '$qID'
+                },
+                'answers': {
+                    '$push': {
+                        'session': '$session',
+                        'ans': '$ans'
+                    }
+                }
+            }
+        }
+    ]))
+
+    if (not bool(question)):
+        return "No data", 402
+    return jsonify(question[0]), 200
+
 
 @app.route("/intelliq_api/doanswer/<string:questionnaireID>/<string:questionID>/<string:session>/<string:optionID>", methods=["POST"])
 def postreponse(questionnaireID, questionID, session, optionID):
@@ -102,9 +135,9 @@ def postreponse(questionnaireID, questionID, session, optionID):
 
 @app.route("/RadioQuestion/<string:session_id>/<string:questionnaire_id>/<string:question_id>")
 def setRadioQuestion(questionnaire_id, question_id, session_id):
-    qOptions = [] #Yes No Maybe
-    qNextIDs = [] #Next question is nextqID
-    qDiffOptions=[] #optID(Yes) optID(No) optID(Maybe)
+    qOptions = []  # Yes No Maybe
+    qNextIDs = []  # Next question is nextqID
+    qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
     questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
                         'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
     print(len(questionForm[0].get('options')))  # Gia svisimo
@@ -121,7 +154,7 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
 
 @app.route("/")
 def questionnaire_test():
-    session_id=str(uuid.uuid4())[:4]
+    session_id = str(uuid.uuid4())[:4]
     print(session_id)
     questionnaires = []
     for questr in db.questionnaire.find():
