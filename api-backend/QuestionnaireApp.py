@@ -238,27 +238,24 @@ def session_answers(slug1, slug2):
     
     return render_template("session_answers.html", session_dict=session_dict)
 
-#Unfinished
-@app.route("/intelliq_api/showquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
-def question_answers(slug1, slug2):
-    url = "http://127.0.0.1:9103/intelliq_api/getquestionanswers/" + slug1 + '/' + slug2
-    # Convert bytes to string type and string type to dict
-    response = urlopen(url)
+#Give Questions of a Questionnaire(with IDs)
+@app.route("/intelliq_api/showquestions/<string:questionnaireID>", methods=["GET"])
+def questions(questionnaireID):
+    url = "http://127.0.0.1:9103/intelliq_api/questionnaire/" + questionnaireID
+    response = urlopen(url)    # Convert bytes to string type and string type to dict
     string = response.read().decode('utf-8')
-    session_dict = json.loads(string)
-
-    for j in session_dict['answers']:
-        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
-        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
-        string2 = response2.read().decode('utf-8')
-        bigQuestion =  json.loads(string2)
-        j['qID'] = bigQuestion['qtext']
-        for k in bigQuestion['options']:
-            if k['optID'] == j['ans']:
-                j['ans']=k['opttxt']
+    questionSet = json.loads(string)
     
-    return render_template("session_answers.html", session_dict=session_dict)
+    questionText=[]
+    for q in questionSet['questions']:
+        questionText.append((q['qtext'],q['qID']))
+    print(questionText)
+    return render_template("question_statisticsList.html", questions=questionText, questionnaireID=questionnaireID)
 
+@app.route("/intelliq_api/showquestionanswers/<string:questionnaireID>/<string:qID>", methods=["GET"])
+def question_answers(questionnaireID,qID):
+    statSessions=sessions(questionnaireID)
+    targetQuestion=get_questionnairequestion(questionnaireID, qID)
 
 
 @app.route("/intelliq_api/showsessions/<string:questionnaireID>", methods=["GET"])

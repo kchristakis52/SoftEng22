@@ -19,6 +19,12 @@
     <li><a href="/intelliq_api/showsessions/{{ item[0] }}">{{ item[1] }}</a></li>
     {% endfor %}
   </ul>
-
+  <h2>Choose a questionnaire to see the Statistics</h2>
+  
+  <ul>
+  {% for item in questionnaires %}
+    <li><a href="/intelliq_api/showquestions/{{ item[0] }}">{{ item[1] }}</a></li>
+    {% endfor %}
+  </ul>
 </form>
 {% endblock %}
