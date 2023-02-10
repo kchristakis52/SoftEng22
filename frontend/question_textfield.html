@@ -1,0 +1,44 @@
+<style>
+  form {
+    width: 500px;
+    margin: 50px auto;
+    text-align: center;
+  }
+  p {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  input[type="submit"] {
+    width: 200px;
+    padding: 10px 20px;
+    background-color: #3f51b5;
+    color: #ffffff;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+</style>
+<!--Ena Duo test-->
+<!-- Kainourgio test -->
+<form action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}">
+  <p>{{Question}}</p>
+  <input id="optionID" type="text" placeholder="Type your asnwer here">
+  <br><br>
+  <input type="submit" value="Submit" onclick='send_post(document.getElementById("optionID").value)'>
+</form>
+
+<script>
+  function send_post(x) {
+    url = 'http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + x
+    fetch(url, {method:'POST'})
+  }
+</script>

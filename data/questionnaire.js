@@ -67,7 +67,6 @@ db.questionnaire.insertOne({
                 {
                     "optID": "Q01A1",
                     "opttxt": "Πράσινο",
-
                     "nextqID": "Q02"
                 },
                 {
@@ -416,52 +415,78 @@ db.questionnaire.insertOne({
   })
 
 db.responses.insertOne({
-    "questionnaireID": "QQ000",
-    "session": "ATBP",
-    "answers": [
-        {
-            "qID": "P00",
-            "ans": "<*>"
-        },
-        {
-            "qID": "P01",
-            "ans": "P01A2"
-        },
-        {
-            "qID": "Q01",
-            "ans": "Q01A2"
-        },
-        {
-            "qID": "Q02",
-            "ans": "Q02A2"
-        },
-        {
-            "qID": "Q03",
-            "ans": "Q03A3"
-        },
-        {
-            "qID": "Q04",
-            "ans": "Q04A1"
-        },
-        {
-            "qID": "Q05",
-            "ans": "Q05A2"
-        },
-        {
-            "qID": "Q06",
-            "ans": "Q06A2"
-        },
-        {
-            "qID": "Q07",
-            "ans": "Q07A3"
-        },
-        {
-            "qID": "Q08",
-            "ans": "Q08A1"
-        },
-        {
-            "qID": "Q09",
-            "ans": "Q09A2"
-        }
-    ]
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "P00",
+  "ans": "<*>"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "P01",
+  "ans": "P01A2"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q01",
+  "ans": "Q01A2"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q02",
+  "ans": "Q02A2"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q03",
+  "ans": "Q03A3"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q04",
+  "ans": "Q04A1"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q05",
+  "ans": "Q05A2"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q06",
+  "ans": "Q06A2"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q07",
+  "ans": "Q04A3"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q08",
+  "ans": "Q08A1"
+})
+
+db.responses.insertOne({
+  "questionnaireID": "QQ000",
+  "session": "ATBP",
+  "qID": "Q09",
+  "ans": "Q09A2"
 })

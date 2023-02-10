@@ -64,17 +64,25 @@ def resetq(questionnaire_id):
     """<Replace with the command description>"""
     pass
 
+#Ena
 @cli.command()
-@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='<Replace with the option description>')
 def questionnaire(questionnaire_id):
-    """<Replace with the command description>"""
+    """Print the selected questionnaire"""
+    url = api_url + "/questionnaire/" + questionnaire_id
+    response = requests.get(url)
+    click.echo(response.text)
     pass
 
+#Dyo
 @cli.command()
-@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-@click.option('--question_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='<Replace with the option description>')
+@click.option('--question_id', prompt='Type the question id', help='<Replace with the option description>')
 def question(questionnaire_id, question_id):
-    """<Replace with the command description>"""
+    """Print the selected question of a questionnaire"""
+    url = api_url + "/question/" + questionnaire_id + "/" + question_id
+    response = requests.get(url)
+    click.echo(response.text)
     pass
 
 @cli.command()
