@@ -277,7 +277,8 @@ def sessions(questionnaireID):
             }
         }
     ]))
-
+    if (not bool(sessions)):
+        return "No data", 402
     sessions = sessions[0]['uniqueValues']
     return render_template("question_answers.html", sessions=sessions, questionnaireID=questionnaireID)
 
