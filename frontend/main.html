@@ -1,8 +1,8 @@
 {% extends 'base.html' %} {% block title %}
-<title>College Student Questionnaire</title>
+<title>Intelliq</title>
 {% endblock %} {% block content %}
 <form>
-  <h1>College Student Questionnaire</h1>
+  <h1>Intelliq</h1>
 
   <h2>Choose the questionnaire you want to answer</h2>
   <ul>
@@ -10,8 +10,15 @@
     <!--- The target URL will change to a new one(this is reserved for the api) -->
     <!--<li><a href="intelliq_api/questionnaire/{{ item[0] }}">{{ item[1] }}</a></li>-->
     <li><a href="/intelliq_api/answerquestion/{{session_id}}/{{item[0]}}/{{item[2]}}">{{item[1]}}</a></li>
-
     {% endfor %}
   </ul>
+
+  <h2>Choose a questionnaire to see the responses</h2>
+  <ul>
+    {% for item in questionnaires %}
+    <li><a href="/intelliq_api/showsessions/{{ item[0] }}">{{ item[1] }}</a></li>
+    {% endfor %}
+  </ul>
+
 </form>
 {% endblock %}
