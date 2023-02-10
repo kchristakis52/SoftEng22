@@ -10,7 +10,7 @@
 import click
 import requests
 
-api_url = "http://127.0.0.1:9103/intelliq_api"
+baseURL = "http://127.0.0.1:9103/intelliq_api"
 
 @click.group()
 def cli():
@@ -22,7 +22,7 @@ def cli():
 @click.option('--passw', prompt='Password', help='Password.', hide_input=True, confirmation_prompt=True)
 def login(username, passw):
     """Login to Questionnaire"""
-    url = api_url + "/login"
+    url = baseURL + "/login"
 
     payload = {
         "username": username,
