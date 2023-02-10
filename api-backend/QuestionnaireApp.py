@@ -1,23 +1,11 @@
 from flask import Flask, request, render_template, jsonify, Response
-import csv
 import pymongo
 import flask_pymongo
 import uuid
+import json
+from urllib.request import urlopen
+import pandas as pd
 
-
-def normalize_json(data: dict) -> dict:
-    new_data = dict()
-    for key, value in data.items():
-        if not isinstance(value, dict):
-            new_data[key] = value
-        else:
-            for k, v in value.items():
-                new_data[key + "_" + k] = v
-
-    return new_data
-
-
-# create app and set directory for html code (default is "./templates")
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
 db = client.queDB
@@ -35,7 +23,13 @@ def get_questionnaire(slug):
     for question in questionnaire["questions"]:
         del question["options"]
     if (format == "csv"):
-        return
+        concatstring = ''
+        for i in questionnaire['keywords']:
+            concatstring += i+" "
+        questionnaire['keywords']=concatstring
+        df = pd.json_normalize(questionnaire, record_path=['questions'], meta=[
+                               '_id', 'questionnaireTitle', 'keywords'])
+        return Response(df.to_csv(), mimetype="text/csv", status=200)
     return jsonify(questionnaire), 200
 
 
@@ -48,6 +42,10 @@ def get_questionnairequestion(slug1, slug2):
                     '$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
     if (not bool(question)):
         return "No data", 402
+    if (format == "csv"):
+        df = pd.json_normalize(question[0], record_path=['options'], meta=[
+                               '_id', 'qID', 'qtext', 'required', 'type'])
+        return Response(df.to_csv(), mimetype="text/csv", status=200)
     return jsonify(question[0]), 200
 
 
@@ -77,10 +75,14 @@ def get_sessionanswers(slug1, slug2):
             }
         }
     ]))
-
     if (not bool(question)):
         return "No data", 402
+    if (format == "csv"):
+        df = pd.json_normalize(question[0], record_path=[
+                               'answers'], meta=['_id', 'session'])
+        return Response(df.to_csv(), mimetype="text/csv", status=200)
     return jsonify(question[0]), 200
+
 
 @app.route("/intelliq_api/getquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def get_questionanswers(slug1, slug2):
@@ -108,9 +110,12 @@ def get_questionanswers(slug1, slug2):
             }
         }
     ]))
-
     if (not bool(question)):
         return "No data", 402
+    if (format == "csv"):
+        df = pd.json_normalize(question[0], record_path=[
+                               'answers'], meta=['_id', 'qID'])
+        return Response(df.to_csv(), mimetype="text/csv", status=200)
     return jsonify(question[0]), 200
 
 
@@ -122,7 +127,7 @@ def postreponse(questionnaireID, questionID, session, optionID):
         "qID": questionID,
         "ans": optionID
     })
-    return Response(status = 204)
+    return Response(status=204)
 
 # diaxeiristika 
 @app.route("/intelliq_api/admin/healthcheck", methods=["GET"])
@@ -179,15 +184,27 @@ def healthcheck():
 # The belows are pages of the website                        --\/--
 
 
-@app.route("/RadioQuestion/<string:session_id>/<string:questionnaire_id>/<string:question_id>")
+@app.route("/intelliq_api/answerquestion/<string:session_id>/<string:questionnaire_id>/<string:question_id>")
 def setRadioQuestion(questionnaire_id, question_id, session_id):
+    if question_id == '-':
+        return render_template("landingpage.html")
     qOptions = []  # Yes No Maybe
     qNextIDs = []  # Next question is nextqID
     qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
-    questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
-                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
-    print(len(questionForm[0].get('options')))  # Gia svisimo
-    if (questionForm[0].get('options')[0].get('optID'))[3] == 'T' or (questionForm[0].get('options')[0].get('optID'))[3] == 'X':
+
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaire_id + '/' + question_id
+    response = urlopen(url)    # Convert bytes to string type and string type to dict
+    string = response.read().decode('utf-8')
+    questionForm = json.loads(string)
+    questionForm = [questionForm]
+
+#    questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
+#                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
+    
+#    print(len(questionForm[0].get('options')))  # Gia svisimo
+    print(question_id)
+   
+    if (len(questionForm[0].get('options'))) == 1:
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'), optionID=questionForm[0].get('options')[0].get('optID'), question_id=question_id, session_id=session_id)
     else:
         for i in range(len(questionForm[0].get('options'))):
@@ -198,10 +215,29 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
 
-@app.route("/getsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
+@app.route("/intelliq_api/showsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def session_answers(slug1, slug2):
-    ses_ans = get_sessionanswers(slug1, slug2)
-    pass
+    url = "http://127.0.0.1:9103/intelliq_api/getsessionanswers/" + slug1 + '/' + slug2
+    # Convert bytes to string type and string type to dict
+    response = urlopen(url)
+    string = response.read().decode('utf-8')
+    session_dict = json.loads(string)
+
+    for j in session_dict['answers']:
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
+        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
+        string2 = response2.read().decode('utf-8')
+        bigQuestion =  json.loads(string2)
+        j['qID'] = bigQuestion['qtext']
+        for k in bigQuestion['options']:
+            if k['optID'] == j['ans']:
+                j['ans']=k['opttxt']
+    
+    
+    for i in session_dict['answers']:
+        print(i)
+    print(session_dict)
+    return render_template("session_answers.html", session_dict=session_dict)
 
 
 @app.route("/")

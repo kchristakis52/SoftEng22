@@ -29,9 +29,16 @@
 </style>
 <!--Ena Duo test-->
 <!-- Kainourgio test -->
-<form action="/RadioQuestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}; fetch('http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/{{optionID}}', {method:'POST'})">
+<form action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}">
   <p>{{Question}}</p>
-  <input type="text" placeholder="Type your asnwer here">
+  <input id="optionID" type="text" placeholder="Type your asnwer here">
   <br><br>
-  <input type="submit" value="Submit">
+  <input type="submit" value="Submit" onclick='send_post(document.getElementById("optionID").value)'>
 </form>
+
+<script>
+  function send_post(x) {
+    url = 'http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + x
+    fetch(url, {method:'POST'})
+  }
+</script>
