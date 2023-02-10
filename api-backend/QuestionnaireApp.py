@@ -9,7 +9,7 @@ from pymongo.errors import ConnectionFailure
 import matplotlib
 
 app = Flask(__name__, template_folder="../frontend")
-client = pymongo.MongoClient("localhost", 27019)
+client = pymongo.MongoClient("localhost", 27017)
 db = client.queDB
 app.config['JSON_AS_ASCII'] = False
 
@@ -238,7 +238,7 @@ def session_answers(slug1, slug2):
     
     return render_template("session_answers.html", session_dict=session_dict)
 
-
+#Unfinished
 @app.route("/intelliq_api/showquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def question_answers(slug1, slug2):
     url = "http://127.0.0.1:9103/intelliq_api/getquestionanswers/" + slug1 + '/' + slug2
@@ -279,7 +279,6 @@ def sessions(questionnaireID):
     ]))
 
     sessions = sessions[0]['uniqueValues']
-    print(sessions)
     return render_template("question_answers.html", sessions=sessions, questionnaireID=questionnaireID)
 
 
