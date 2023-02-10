@@ -132,7 +132,7 @@ def postreponse(questionnaireID, questionID, session, optionID):
 # diaxeiristika 
 @app.route("/intelliq_api/admin/healthcheck", methods=["GET"])
 def healthcheck():
-    if(db.getMongo):
+    if(db.getMongo is not None):
         result = {
             "status": "OK",
             "dbconnection": "mongodb://localhost:27017"
