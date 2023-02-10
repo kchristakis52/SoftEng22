@@ -5,9 +5,10 @@ import uuid
 import json
 from urllib.request import urlopen
 import pandas as pd
+#from pymongo.errors import ConnectionFailure
 
 app = Flask(__name__, template_folder="../frontend")
-client = pymongo.MongoClient("localhost", 27017)
+client = pymongo.MongoClient("localhost", 27019)
 db = client.queDB
 app.config['JSON_AS_ASCII'] = False
 
@@ -131,20 +132,6 @@ def postreponse(questionnaireID, questionID, session, optionID):
 
 # diaxeiristika 
 @app.route("/intelliq_api/admin/healthcheck", methods=["GET"])
-def healthcheck():
-    if(db.getMongo is not None):
-        result = {
-            "status": "OK",
-            "dbconnection": "mongodb://localhost:27017"
-        }
-    else: 
-        result = {
-            "status": "failed",
-            "dbconnection": "mongodb://localhost:27017"
-        }
-    return jsonify(result)
-    
-
 
 
 
@@ -153,8 +140,21 @@ def healthcheck():
 
 
 
-
-@app.route("/intelliq_api/admin/resetall", methods=["POST"])
+@app.route("/intelliq_api/admin/resetall", methods=["POST", "GET"])
+def resetall():
+    result =  {"status":"OK"}
+    try:
+        if db.responses.drop():
+            if db.questionnaire.drop():
+                return jsonify(result), 200
+    except:
+        if db.responses == None or db.questionnaire == None:
+            result =  {"status":"failed", "reason": "Bad request"}
+            return jsonify(result), 400
+        
+    result =  {"status":"failed", "reason": "Internal server error"}
+    return jsonify(result), 500
+        
 # resets all questionnaires, answers, users
 # success -> json object: {"status":"OK"}
 # else -> {"status":"failed", "reason":<...>}
