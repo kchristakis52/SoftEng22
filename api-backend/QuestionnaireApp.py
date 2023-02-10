@@ -9,7 +9,7 @@ from pymongo.errors import ConnectionFailure
 import matplotlib
 
 app = Flask(__name__, template_folder="../frontend")
-client = pymongo.MongoClient("localhost", 27017)
+client = pymongo.MongoClient("localhost", 27019)
 db = client.queDB
 app.config['JSON_AS_ASCII'] = False
 
@@ -144,15 +144,26 @@ def healthcheck():
     
 
 
-
-
 @app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
 
 
 
 
-
-@app.route("/intelliq_api/admin/resetall", methods=["POST"])
+@app.route("/intelliq_api/admin/resetall", methods=["POST", "GET"])
+def resetall():
+    result =  {"status":"OK"}
+    try:
+        if db.responses.drop():
+            if db.questionnaire.drop():
+                return jsonify(result), 200
+    except:
+        if db.responses == None or db.questionnaire == None:
+            result =  {"status":"failed", "reason": "Bad request"}
+            return jsonify(result), 400
+        
+    result =  {"status":"failed", "reason": "Internal server error"}
+    return jsonify(result), 500
+        
 # resets all questionnaires, answers, users
 # success -> json object: {"status":"OK"}
 # else -> {"status":"failed", "reason":<...>}
