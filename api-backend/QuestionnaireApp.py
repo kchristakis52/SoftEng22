@@ -5,7 +5,7 @@ import uuid
 import json
 from urllib.request import urlopen
 import pandas as pd
-#from pymongo.errors import ConnectionFailure
+from pymongo.errors import ConnectionFailure
 
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27019)
@@ -132,7 +132,15 @@ def postreponse(questionnaireID, questionID, session, optionID):
 
 # diaxeiristika 
 @app.route("/intelliq_api/admin/healthcheck", methods=["GET"])
-
+def healthcheck():
+    response = {"status":"OK", "dbconnection":["localhost", 27017]} 
+    try:
+        client.admin.command('ismaster')
+    except ConnectionFailure:
+        response = {"status":"failed", "dbconnection":["localhost", 27017]}
+        return jsonify(response), 500
+    return jsonify(response), 200
+    
 
 
 @app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
@@ -218,6 +226,31 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
 @app.route("/intelliq_api/showsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def session_answers(slug1, slug2):
     url = "http://127.0.0.1:9103/intelliq_api/getsessionanswers/" + slug1 + '/' + slug2
+    # Convert bytes to string type and string type to dict
+    response = urlopen(url)
+    string = response.read().decode('utf-8')
+    session_dict = json.loads(string)
+
+    for j in session_dict['answers']:
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
+        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
+        string2 = response2.read().decode('utf-8')
+        bigQuestion =  json.loads(string2)
+        j['qID'] = bigQuestion['qtext']
+        for k in bigQuestion['options']:
+            if k['optID'] == j['ans']:
+                j['ans']=k['opttxt']
+    
+    
+    for i in session_dict['answers']:
+        print(i)
+    print(session_dict)
+    return render_template("session_answers.html", session_dict=session_dict)
+
+
+@app.route("/intelliq_api/showquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
+def question_answers(slug1, slug2):
+    url = "http://127.0.0.1:9103/intelliq_api/getquestionanswers/" + slug1 + '/' + slug2
     # Convert bytes to string type and string type to dict
     response = urlopen(url)
     string = response.read().decode('utf-8')
