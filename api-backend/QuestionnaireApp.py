@@ -8,7 +8,7 @@ import pandas as pd
 from pymongo.errors import ConnectionFailure
 
 app = Flask(__name__, template_folder="../frontend")
-client = pymongo.MongoClient("localhost", 27019)
+client = pymongo.MongoClient("localhost", 27017)
 db = client.queDB
 app.config['JSON_AS_ASCII'] = False
 
