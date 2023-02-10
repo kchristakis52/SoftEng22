@@ -124,6 +124,52 @@ def postreponse(questionnaireID, questionID, session, optionID):
     })
     return Response(status = 204)
 
+# diaxeiristika 
+@app.route("/intelliq_api/admin/healthcheck", methods=["GET"])
+def healthcheck():
+    if(db.getMongo == 1):
+        result = {
+            "status": "OK",
+            "dbconnection": "mongodb://localhost:27017"
+        }
+    else: 
+        result = {
+            "status": "failed",
+            "dbconnection": "mongodb://localhost:27017"
+        }
+    return jsonify(result)
+    
+
+
+
+
+@app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
+
+
+
+
+
+@app.route("/intelliq_api/admin/resetall", methods=["POST"])
+# resets all questionnaires, answers, users
+# success -> json object: {"status":"OK"}
+# else -> {"status":"failed", "reason":<...>}
+
+
+
+
+
+
+@app.route("/intelliq_api/admin/resetq/<string:questionnaireID>", methods=["POST"])
+# deletion of answers of the questionnaire with id questionnaireID,
+# success -> json object: {"status":"OK"}
+# else -> {"status":"failed", "reason":<...>}
+
+
+
+
+
+
+
 
 # The aboves are APIs                    --/\--
 #                                          ||
