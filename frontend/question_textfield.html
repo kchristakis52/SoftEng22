@@ -38,9 +38,7 @@
 
 <script>
   function send_post(x) {
-    console.log("supra")
     url = 'http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + x
-    console.log("supra")
     fetch(url, {method:'POST'})
   }
 </script>

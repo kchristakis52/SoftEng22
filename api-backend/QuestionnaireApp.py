@@ -152,9 +152,12 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
 
 #    questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
 #                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
-
-    print(len(questionForm[0].get('options')))  # Gia svisimo
-    if (len(questionForm[0].get('options'))) == 1:
+    
+#    print(len(questionForm[0].get('options')))  # Gia svisimo
+    print(question_id)
+    if question_id == '-':
+        render_template("landingpage.html")
+    elif (len(questionForm[0].get('options'))) == 1:
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'), optionID=questionForm[0].get('options')[0].get('optID'), question_id=question_id, session_id=session_id)
     else:
         for i in range(len(questionForm[0].get('options'))):
