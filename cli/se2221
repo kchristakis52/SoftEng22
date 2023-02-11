@@ -26,7 +26,7 @@ def healthcheck():
     """Check health status of server"""
     url = baseURL + "/admin/healthcheck"
     response = requests.get(url=url)
-    print(response.json()) 
+    click.echo(response.text) 
     pass
 
 @cli.command()
@@ -34,7 +34,7 @@ def resetall():
     """Reset EVERYTHING in Database"""
     url = baseURL + "/admin/resetall"
     response = requests.post(url=url)
-    print(response.json()) 
+    click.echo(response.text) 
     pass
 
 @cli.command()
@@ -74,7 +74,7 @@ def resetq(questionnaire_id):
     """Reset all answers in Database for specific Questionnaire"""
     url = baseURL + "/admin/resetq/" + questionnaire_id
     response = requests.post(url=url)
-    print(response.json())
+    click.echo(response.text)
     pass
 
 @cli.command()
@@ -97,17 +97,20 @@ def question(questionnaire_id, question_id):
     pass
 
 @cli.command()
-@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-@click.option('--question_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-@click.option('--session_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-@click.option('--option_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--question_id', prompt='<Type the question id', help='Takes the question id')
+@click.option('--session_id', prompt='Type the session id', help='Takes the session id')
+@click.option('--option_id', prompt='Type the option id', help='Takes the option id')
 def doanswer(questionnaire_id, question_id, session_id, option_id):
-    """<Replace with the command description>"""
+    """Answer question in questionnaire"""
+    url = baseURL + "/doanswer/" + questionnaire_id + "/" + question_id + "/" + session_id + "/" + option_id
+    response = requests.post(url)
+    click.echo(response.text)
     pass
 
 @cli.command()
-@click.option('--questionnaire_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-@click.option('--session_id', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--session_id', prompt='Type the session id', help='Takes the session id')
 def getsessionanswers(questionnaire_id, session_id):
     """Get answers from specific session in questionnaire"""
     url = baseURL + "/getsessionanswers/" + questionnaire_id + "/" + session_id
