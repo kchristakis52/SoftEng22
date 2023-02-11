@@ -48,6 +48,7 @@ def get_questionnairequestion(slug1, slug2):
         df = pd.json_normalize(question[0], record_path=['options'], meta=[
                                '_id', 'qID', 'qtext', 'required', 'type'])
         return Response(df.to_csv(), mimetype="text/csv", status=200)
+    print(question)
     return jsonify(question[0]), 200
 
 
@@ -198,8 +199,7 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     qNextIDs = []  # Next question is nextqID
     qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
 
-    url = "http://127.0.0.1:9103/intelliq_api/question/" + \
-        questionnaire_id + '/' + question_id
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaire_id + '/' + question_id
     # Convert bytes to string type and string type to dict
     response = urlopen(url)
     string = response.read().decode('utf-8')
@@ -271,14 +271,31 @@ def question_answers(questionnaireID, qID):
             '$sortByCount': '$ans'
         }
     ]))
-    qOptions=[]
-    qData = []
+
+
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaireID + '/' + qID
+    # Convert bytes to string type and string type to dict
+    response = urlopen(url)
+    string = response.read().decode('utf-8')
+    questionForm = json.loads(string)
+    
+    
+    qOptions=[] #[Πρασινο, Q01A1]
+    
+    for i in range(len(questionForm.get('options'))):
+            qOptions.append((questionForm.get('options')[i].get('opttxt'), questionForm.get('options')[i].get('optID')))
+    
+    qData = [] #[x times answered]
+    qAnswers = []
     for i in statistics:
-        qOptions.append(i['_id'])
+        qAnswers.append(i['_id'])
         qData.append(i['count'])
-    print(qOptions)
-    print(qData)
-    return render_template("chart.html", qOptions= qOptions, qData= qData)
+    for i in qAnswers:
+       if qAnswers[i]==qOptions[i][1]:
+        qAnswers[i]==qOptions[i][0] 
+    #print(qOptions)
+    #print(qData)
+    return render_template("chart.html", qAnswers=qAnswers, qData= qData)
     
 
 
