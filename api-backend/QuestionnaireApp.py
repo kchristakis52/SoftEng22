@@ -197,8 +197,7 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     qNextIDs = []  # Next question is nextqID
     qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
 
-    url = "http://127.0.0.1:9103/intelliq_api/question/" + \
-        questionnaire_id + '/' + question_id
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaire_id + '/' + question_id
     # Convert bytes to string type and string type to dict
     response = urlopen(url)
     string = response.read().decode('utf-8')
