@@ -13,6 +13,10 @@
         box-shadow: 2px 2px 10px #ccc;
       }
 
+      label {
+        pointer-events: none;
+      }
+
       p {
         font-size: 22px;
         font-weight: bold;
@@ -107,40 +111,58 @@
       }
     </script>
 
-    <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
+<button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
 
-    <form
-      id="myForm"
-      action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{Nextquestion_id}}"
-    >
-      <p>{{Question}}</p>
-      <div class="checkbox-container">
-        {% for qst in qOptions %}
-        <div class="checkbox-label">
-          <input
-            type="radio"
-            id="answer{{loop.index0}}"
-            name="answer"
-            value="{{loop.index0}}"
-          
+<form
+id="myForm"
+action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{Nextquestion_id}}"
+>
+<p>{{Question}}</p>
+<div class="checkbox-container">
+  {% for qst in qOptions %}
+  <div class="checkbox-label">
+    <input
+      type="radio"
+      id="answer{{loop.index0}}"
+      name="answer"
+      value="{{loop.index0}}"
+      answer="{{qDiffOptions[loop.index0]}}"
+      next="{{qNextIDs[loop.index0]}}"
+    
+      />
+    <label for="answer1">{{qst}}</label>
+  </div>
+  {% endfor %}
+</div>
+<br /><br />
+<!-- Nextquestion_id[value] -->
+<input type="submit" value="Submit" />
+</form>
 
-           
-            onclick="changeAction('/intelliq_api/answerquestion/{{session_id}}/{{ questionnaire_id }}/{{ qNextIDs[loop.index0] }}'); fetch('http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/{{qDiffOptions[loop.index0]}}', {method:'POST'})"
-            
-            />
-          <label for="answer1">{{qst}}</label>
-        </div>
-        {% endfor %}
-      </div>
-      <br /><br />
-      <!-- Nextquestion_id[value] -->
-      <input type="submit" value="Submit" />
-    </form>
+<script>
 
-    <script>
-      function changeAction(url) {
-        document.getElementById("myForm").action = url;
-      }
-    </script>
-  </body>
+document.getElementById("myForm").addEventListener("submit", function(event) {
+  let selectedOption = document.querySelector("input[name='answer']:checked");
+
+  if (!selectedOption) {
+    alert("Please select an answer");
+    event.preventDefault();
+  } else {
+    let session_id = selectedOption.dataset.session_id;
+    let questionnaire_id = selectedOption.dataset.questionnaire_id;
+    let question_id = selectedOption.dataset.question_id;
+    let next_question_id = selectedOption.dataset.next_question_id;
+
+    console.log("{{Nextquestion_id}}");
+    let url = `/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/${selectedOption.getAttribute("answer")}`;
+
+    fetch(url, { method: "POST" });
+
+    url = `/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/${selectedOption.getAttribute("next")}`;
+    document.getElementById("myForm").action = url;
+
+  }
+});
+</script>
+</body>
 </html>
