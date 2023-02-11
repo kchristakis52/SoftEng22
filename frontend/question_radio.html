@@ -152,17 +152,17 @@
       alert("Please select an answer");
       event.preventDefault();
     } else {
-      let session_id = selectedOption.dataset.session_id;
-      let questionnaire_id = selectedOption.dataset.questionnaire_id;
-      let question_id = selectedOption.dataset.question_id;
-      let next_question_id = selectedOption.dataset.next_question_id;
 
       let url = `/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/${selectedOption.getAttribute("answer")}`;
 
-      fetch(url, { method: "POST" });
+      fetch(url, { method: "POST" })
+  .then(response => {
+    url = `/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/${selectedOption.getAttribute("next")}`;
+    document.getElementById("myForm").action = url;
+    document.getElementById("myForm").submit();
+  })
 
-      url = `/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/${selectedOption.getAttribute("next")}`;
-      document.getElementById("myForm").action = url;
+event.preventDefault();
 
     }
   });
