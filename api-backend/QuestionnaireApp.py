@@ -260,9 +260,9 @@ def questions(questionnaireID):
     for q in questionSet['questions']:
         questionText.append((q['qtext'], q['qID']))
     print(questionText)
-    return render_template("question_statisticsList.html", questions=questionText, questionnaireID=questionnaireID)
+    return render_template("question_List.html", questions=questionText, questionnaireID=questionnaireID)
 
-
+#Pass question stats to pie chart - Unfinished
 @app.route("/intelliq_api/showquestionanswers/<string:questionnaireID>/<string:qID>", methods=["GET"])
 def question_answers(questionnaireID, qID):
     statistics = list(db.responses.aggregate([
@@ -275,6 +275,15 @@ def question_answers(questionnaireID, qID):
             '$sortByCount': '$ans'
         }
     ]))
+    qOptions=[]
+    qData = []
+    for i in statistics:
+        qOptions.append(i['_id'])
+        qData.append(i['count'])
+    print(qOptions)
+    print(qData)
+    return render_template("chart.html", qOptions=map(json.dumps, qOptions), qData=map(json.dumps, qData))
+    
 
 
 @app.route("/intelliq_api/showsessions/<string:questionnaireID>", methods=["GET"])
@@ -295,7 +304,9 @@ def sessions(questionnaireID):
     ]))
     if (not bool(sessions)):
         return "No data", 402
+    
     sessions = sessions[0]['uniqueValues']
+    print(sessions)
     return render_template("question_answers.html", sessions=sessions, questionnaireID=questionnaireID)
 
 
