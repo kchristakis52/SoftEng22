@@ -6,7 +6,7 @@ import json
 from urllib.request import urlopen
 import pandas as pd
 from pymongo.errors import ConnectionFailure
-import matplotlib
+#import matplotlib
 
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
@@ -146,7 +146,34 @@ def healthcheck():
     return jsonify(response), 200
 
 
-@app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
+
+
+
+
+
+@app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST", "GET"])
+def questionnaireupd():
+
+    result = {"status": "OK"}
+    Collection = db.questionnaire
+    with open("C:\\Users\giorg\Desktop\questionnaireupd.json", "r", encoding= "utf-8") as file:
+        file_data = json.load(file)
+    print(file_data)
+    if isinstance(file_data, list):
+        Collection.insert_many(file_data) 
+    else:
+        Collection.insert_one(file_data)
+    return jsonify(result), 200
+
+
+
+
+
+
+
+
+
+
 @app.route("/intelliq_api/admin/resetall", methods=["POST", "GET"])
 def resetall():
     result = {"status": "OK"}
@@ -180,6 +207,8 @@ def questionnaireIDreset(questionnaireID):
         result =  {"status":"failed", "reason": "Internal server error"}
         return jsonify(result), 500
     
+
+
 
 
 # deletion of answers of the questionnaire with id questionnaireID,
