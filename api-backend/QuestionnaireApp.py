@@ -48,7 +48,7 @@ def get_questionnairequestion(slug1, slug2):
         df = pd.json_normalize(question[0], record_path=['options'], meta=[
                                '_id', 'qID', 'qtext', 'required', 'type'])
         return Response(df.to_csv(), mimetype="text/csv", status=200)
-    print(question)
+    
     return jsonify(question[0]), 200
 
 
@@ -259,7 +259,7 @@ def session_answers(slug1, slug2):
 
     for j in session_dict['answers']:
         url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
-        # Convert bytes to string type and string type to dict
+        
         response2 = urlopen(url2)
         string2 = response2.read().decode('utf-8')
         bigQuestion = json.loads(string2)
@@ -276,7 +276,7 @@ def session_answers(slug1, slug2):
 @app.route("/intelliq_api/showquestions/<string:questionnaireID>", methods=["GET"])
 def questions(questionnaireID):
     url = "http://127.0.0.1:9103/intelliq_api/questionnaire/" + questionnaireID
-    # Convert bytes to string type and string type to dict
+    
     response = urlopen(url)
     string = response.read().decode('utf-8')
     questionSet = json.loads(string)
@@ -303,7 +303,7 @@ def question_answers(questionnaireID, qID):
 
 
     url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaireID + '/' + qID
-    # Convert bytes to string type and string type to dict
+    
     response = urlopen(url)
     string = response.read().decode('utf-8')
     questionForm = json.loads(string)
@@ -317,13 +317,12 @@ def question_answers(questionnaireID, qID):
     qData = [] #[x times answered]
     qAnswers = []
     for i in statistics:
-        qAnswers.append(i['_id'])
         qData.append(i['count'])
-    for i in qAnswers:
-       if qAnswers[i]==qOptions[i][1]:
-        qAnswers[i]==qOptions[i][0] 
-    #print(qOptions)
-    #print(qData)
+        for j in range(len(qOptions)):
+            if i['_id']==qOptions[j][1]:
+                qAnswers.append(qOptions[j][0])
+    
+    
     return render_template("chart.html", qAnswers=qAnswers, qData= qData)
     
 
