@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %} 
 <style>
   form {
     width: 500px;
@@ -30,8 +32,8 @@
 <!--Ena Duo test-->
 <!-- Kainourgio test -->
 <form action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}">
-  <p>{{Question}}</p>
-  <input id="optionID" type="text" placeholder="Type your asnwer here">
+  <h2>{{Question}}</h2>
+  <input id="optionID" type="text" placeholder="Type your answer here">
   <br><br>
   <input type="submit" value="Submit" onclick='send_post(document.getElementById("optionID").value)'>
 </form>
@@ -42,3 +44,4 @@
     fetch(url, {method:'POST'})
   }
 </script>
+{% endblock %}

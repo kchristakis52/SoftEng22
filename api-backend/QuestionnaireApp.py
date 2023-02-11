@@ -235,11 +235,8 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     questionForm = json.loads(string)
     questionForm = [questionForm]
 
-#    questionForm = list(db.questionnaire.aggregate([{'$match': {'_id': questionnaire_id}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': question_id}}, {'$unset': [
-#                        'keywords', 'questionnaireTitle']}, {'$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
-    
-#    print(len(questionForm[0].get('options')))  # Gia svisimo
-    print(question_id)
+
+   
    
     if (len(questionForm[0].get('options'))) == 1:
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'), optionID=questionForm[0].get('options')[0].get('optID'), question_id=question_id, session_id=session_id)
@@ -248,7 +245,7 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             qOptions.append(questionForm[0].get('options')[i].get('opttxt'))
             qNextIDs.append(questionForm[0].get('options')[i].get('nextqID'))
             qDiffOptions.append(questionForm[0].get('options')[i].get('optID'))
-            # print(qNextIDs[j]) # gia svisimo
+            
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
 
@@ -261,8 +258,7 @@ def session_answers(slug1, slug2):
     session_dict = json.loads(string)
 
     for j in session_dict['answers']:
-        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + \
-            slug1 + '/' + j['qID']
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
         # Convert bytes to string type and string type to dict
         response2 = urlopen(url2)
         string2 = response2.read().decode('utf-8')
@@ -288,10 +284,10 @@ def questions(questionnaireID):
     questionText = []
     for q in questionSet['questions']:
         questionText.append((q['qtext'], q['qID']))
-    print(questionText)
-    return render_template("question_statisticsList.html", questions=questionText, questionnaireID=questionnaireID)
+    
+    return render_template("question_List.html", questions=questionText, questionnaireID=questionnaireID)
 
-
+#Pass question stats to pie chart - Unfinished
 @app.route("/intelliq_api/showquestionanswers/<string:questionnaireID>/<string:qID>", methods=["GET"])
 def question_answers(questionnaireID, qID):
     statistics = list(db.responses.aggregate([
@@ -304,6 +300,15 @@ def question_answers(questionnaireID, qID):
             '$sortByCount': '$ans'
         }
     ]))
+    qOptions=[]
+    qData = []
+    for i in statistics:
+        qOptions.append(i['_id'])
+        qData.append(i['count'])
+    print(qOptions)
+    print(qData)
+    return render_template("chart.html", qOptions= qOptions, qData= qData)
+    
 
 
 @app.route("/intelliq_api/showsessions/<string:questionnaireID>", methods=["GET"])
@@ -324,14 +329,16 @@ def sessions(questionnaireID):
     ]))
     if (not bool(sessions)):
         return "No data", 402
+    
     sessions = sessions[0]['uniqueValues']
+    
     return render_template("question_answers.html", sessions=sessions, questionnaireID=questionnaireID)
 
 
 @app.route("/")
 def questionnaire_test():
     session_id = str(uuid.uuid4())[:4]
-    print(session_id)
+    
     questionnaires = []
     for questr in db.questionnaire.find():
         questionnaires.append(

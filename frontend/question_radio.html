@@ -1,146 +1,172 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Question</title>
-    <style>
-      form {
-        width: 500px;
-        margin: 50px auto;
-        text-align: center;
-        background-color: #f8f8f8;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px #ccc;
-      }
 
-      p {
-        font-size: 22px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 20px;
-      }
+<head>
+  <title>Question</title>
+  <style>
+    form {
+      width: 500px;
+      margin: 50px auto;
+      text-align: center;
+      background-color: #f8f8f8;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px #ccc;
+    }
 
-      .checkbox-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 40px;
-      }
+    label {
+      pointer-events: none;
+    }
 
-      .checkbox-label {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-      }
+    p {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
 
-      input[type="radio"] {
-        margin-right: 10px;
-        transform: scale(1.5);
-      }
+    .checkbox-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
 
-      label {
-        font-size: 18px;
-        color: #333;
-      }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
 
-      input[type="submit"] {
-        width: 200px;
-        padding: 10px 20px;
-        background-color: #3f51b5;
-        color: #ffffff;
-        font-size: 18px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-      }
-      /* Add dark mode styles */
-      .dark-mode {
-        background-color: #333;
-        color: #fff;
-      }
+    input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.5);
+    }
 
-      .dark-mode input[type="text"],
-      .dark-mode select {
-        border-color: #fff;
-      }
+    label {
+      font-size: 18px;
+      color: #333;
+    }
 
-      .dark-mode input[type="submit"] {
-        background-color: rgb(24, 81, 100);
-      }
+    input[type="submit"] {
+      width: 200px;
+      padding: 10px 20px;
+      background-color: #3f51b5;
+      color: #ffffff;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
 
-      .dark-mode input[type="submit"]:hover {
-        background-color: rgb(20, 69, 85);
-      }
+    /* Add dark mode styles */
+    .dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
 
-      #theme-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #4caf50;
-        color: #fff;
-        padding: 14px 20px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 18px;
-      }
+    .dark-mode input[type="text"],
+    .dark-mode select {
+      border-color: #fff;
+    }
 
-      #theme-btn:hover {
-        background-color: #3e8e41;
-      }
-    </style>
-  </head>
+    .dark-mode input[type="submit"] {
+      background-color: rgb(24, 81, 100);
+    }
 
-  <body>
-    <!--{{qNextIDs}}-->
-    <script>
-      function changeTheme() {
-        let body = document.querySelector("body");
-        let btn = document.querySelector("#theme-btn");
-        if (body.classList.contains("dark-mode")) {
-          body.classList.remove("dark-mode");
-          btn.innerHTML = "Dark Mode";
-        } else {
-          body.classList.add("dark-mode");
-          btn.innerHTML = "Light Mode";
-        }
-      }
-    </script>
+    .dark-mode input[type="submit"]:hover {
+      background-color: rgb(20, 69, 85);
+    }
 
-    <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
+    #theme-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #4caf50;
+      color: #fff;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+    }
 
-    <form
-      id="myForm"
-      action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{Nextquestion_id}}"
-    >
-      <p>{{Question}}</p>
-      <div class="checkbox-container">
-        {% for qst in qOptions %}
-        <div class="checkbox-label">
-          <input
-            type="radio"
-            id="answer{{loop.index0}}"
-            name="answer"
-            value="{{loop.index0}}"
-          
+    #theme-btn:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+</head>
+<body>
+<script>
+  function changeTheme() {
+    let body = document.querySelector("body");
+    let btn = document.querySelector("#theme-btn");
+    if (body.classList.contains("dark-mode")) {
+      body.classList.remove("dark-mode");
+      btn.innerHTML = "Dark Mode";
+      localStorage.setItem("theme", "light");
+    } else {
+      body.classList.add("dark-mode");
+      btn.innerHTML = "Light Mode";
+      localStorage.setItem("theme", "dark");
+    }
+  }
+  window.addEventListener("load", function() {
+    let body = document.querySelector("body");
+    let btn = document.querySelector("#theme-btn");
+    let theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+      body.classList.add("dark-mode");
+      btn.innerHTML = "Light Mode";
+    } else {
+      body.classList.remove("dark-mode");
+      btn.innerHTML = "Dark Mode";
+    }
+  });
+</script>
 
-           
-            onclick="changeAction('/intelliq_api/answerquestion/{{session_id}}/{{ questionnaire_id }}/{{ qNextIDs[loop.index0] }}'); fetch('http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/{{qDiffOptions[loop.index0]}}', {method:'POST'})"
-            
-            />
-          <label for="answer1">{{qst}}</label>
-        </div>
-        {% endfor %}
-      </div>
-      <br /><br />
-      <!-- Nextquestion_id[value] -->
-      <input type="submit" value="Submit" />
-    </form>
+<button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
 
-    <script>
-      function changeAction(url) {
-        document.getElementById("myForm").action = url;
-      }
-    </script>
-  </body>
+<form id="myForm" action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{Nextquestion_id}}">
+  <p>{{Question}}</p>
+  <div class="checkbox-container">
+    {% for qst in qOptions %}
+    <div class="checkbox-label">
+      <input type="radio" id="answer{{loop.index0}}" name="answer" value="{{loop.index0}}"
+        answer="{{qDiffOptions[loop.index0]}}" next="{{qNextIDs[loop.index0]}}" />
+      <label for="answer1">{{qst}}</label>
+    </div>
+    {% endfor %}
+  </div>
+  <br /><br />
+  <!-- Nextquestion_id[value] -->
+  <input type="submit" value="Submit" />
+</form>
+
+<script>
+
+  document.getElementById("myForm").addEventListener("submit", function (event) {
+    let selectedOption = document.querySelector("input[name='answer']:checked");
+
+    if (!selectedOption) {
+      alert("Please select an answer");
+      event.preventDefault();
+    } else {
+      let session_id = selectedOption.dataset.session_id;
+      let questionnaire_id = selectedOption.dataset.questionnaire_id;
+      let question_id = selectedOption.dataset.question_id;
+      let next_question_id = selectedOption.dataset.next_question_id;
+
+      let url = `/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/${selectedOption.getAttribute("answer")}`;
+
+      fetch(url, { method: "POST" });
+
+      url = `/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/${selectedOption.getAttribute("next")}`;
+      document.getElementById("myForm").action = url;
+
+    }
+  });
+</script>
+</body>
+
 </html>

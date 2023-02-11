@@ -10,46 +10,28 @@
 import click
 import requests
 
-api_url = "http://127.0.0.1:9103/intelliq_api"
+baseURL = "http://127.0.0.1:9103/intelliq_api"
 
 @click.group()
 def cli():
     """CLI for Questionnaire API"""
     pass
 
-@cli.command()
-@click.option('--username', prompt='Username', help='Username.')
-@click.option('--passw', prompt='Password', help='Password.', hide_input=True, confirmation_prompt=True)
-def login(username, passw):
-    """Login to Questionnaire"""
-    url = api_url + "/login"
-
-    payload = {
-        "username": username,
-        "password": passw
-    }
-    response = requests.post(url, data=payload)
-
-    click.echo(response)
-    """
-    if response!="Success":
-        click.echo(click.style('Invalid Credentials', fg='red', bold=True))
-        exit()
-    """
-
-@cli.command()
-def logout():
-    """<Replace with the command description>"""
-    pass
 
 @cli.command()
 def healthcheck():
-    """<Replace with the command description>"""
+    """Check health status of server"""
+    url = baseURL + "/admin/healthcheck"
+    response = requests.get(url=url)
+    print(response.json()) 
     pass
 
 @cli.command()
 def resetall():
     """<Replace with the command description>"""
+    url = baseURL + "/admin/resetall"
+    response = requests.post(url=url)
+    print(response.json()) 
     pass
 
 @cli.command()
@@ -109,40 +91,6 @@ def getquestionanswers(questionnaire_id, question_id):
     pass
 
 
-# !!!
-# Admin's command structure is not developed yet
-# We have 2 options
-# 1) use usermod, username, ... etc as sub-commands (and take their own paremeters)
-# 2) use --usermod, --username, ... etc as parameters of admin command
-#    while their "sub-parameters" will also be parameters of admin command 
-@cli.group()
-def admin():
-    """<Replace with the command description>"""
-    pass
-
-
-@admin.command(name='--usermod')
-@click.option('--username', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-@click.option('--passw', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-def usermod(username, passw):
-    """<Replace with the command description>"""
-    pass
-
-@admin.command(name='--username')
-@click.option('--passw', prompt='<Replace with the prompt message>', help='<Replace with the option description>')
-def username(passw):
-    """<Replace with the command description>"""
-    pass
-
-@admin.command(name='--passw')
-def passw():
-    """<Replace with the command description>"""
-    pass
-
-@admin.command(name='--users')
-def users():
-    """<Replace with the command description>"""
-    pass
 
 if __name__ == '__main__':
     cli()
