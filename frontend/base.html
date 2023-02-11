@@ -106,19 +106,21 @@
       }
     </style>
 
-    <script>
-      function changeTheme() {
-        let body = document.querySelector("body");
-        let btn = document.querySelector("#theme-btn");
-        if (body.classList.contains("dark-mode")) {
-          body.classList.remove("dark-mode");
-          btn.innerHTML = "Dark Mode";
-        } else {
-          body.classList.add("dark-mode");
-          btn.innerHTML = "Light Mode";
-        }
-      }
-    </script>
+<script>
+  function changeTheme() {
+    let body = document.querySelector("body");
+    let btn = document.querySelector("#theme-btn");
+    if (body.classList.contains("dark-mode")) {
+      body.classList.remove("dark-mode");
+      btn.innerHTML = "Dark Mode";
+      localStorage.setItem("theme", "light");
+    } else {
+      body.classList.add("dark-mode");
+      btn.innerHTML = "Light Mode";
+      localStorage.setItem("theme", "dark");
+    }
+  }
+</script>
     <style>
       /* Add dark mode styles */
       .dark-mode {
@@ -142,6 +144,21 @@
   </head>
 
   <body>
+    <script>
+      window.addEventListener("load", function() {
+        let body = document.querySelector("body");
+        let btn = document.querySelector("#theme-btn");
+        let theme = localStorage.getItem("theme");
+        if (theme === "dark") {
+          body.classList.add("dark-mode");
+          btn.innerHTML = "Light Mode";
+        } else {
+          body.classList.remove("dark-mode");
+          btn.innerHTML = "Dark Mode";
+        }
+      });
+    </script>
+    
     <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
     {% block content %} {% endblock %}
   </body>
