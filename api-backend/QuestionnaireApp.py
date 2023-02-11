@@ -28,7 +28,7 @@ def get_questionnaire(slug):
         concatstring = ''
         for i in questionnaire['keywords']:
             concatstring += i+" "
-        questionnaire['keywords']=concatstring
+        questionnaire['keywords'] = concatstring
         df = pd.json_normalize(questionnaire, record_path=['questions'], meta=[
                                '_id', 'questionnaireTitle', 'keywords'])
         return Response(df.to_csv(), mimetype="text/csv", status=200)
@@ -131,27 +131,24 @@ def postreponse(questionnaireID, questionID, session, optionID):
     })
     return Response(status=204)
 
-# diaxeiristika 
+# diaxeiristika
+
+
 @app.route("/intelliq_api/admin/healthcheck", methods=["GET"])
 def healthcheck():
-    response = {"status":"OK", "dbconnection":["localhost", 27017]} 
+    response = {"status": "OK", "dbconnection": ["localhost", 27017]}
     try:
         client.admin.command('ismaster')
     except ConnectionFailure:
-        response = {"status":"failed", "dbconnection":["localhost", 27017]}
+        response = {"status": "failed", "dbconnection": ["localhost", 27017]}
         return jsonify(response), 500
     return jsonify(response), 200
-    
 
 
 @app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
-
-
-
-
 @app.route("/intelliq_api/admin/resetall", methods=["POST", "GET"])
 def resetall():
-    result =  {"status":"OK"}
+    result = {"status": "OK"}
     try:
         if db.responses.drop() and db.questionnaire.drop():
             return jsonify(result), 200
@@ -164,10 +161,6 @@ def resetall():
 # resets all questionnaires, answers, users
 # success -> json object: {"status":"OK"}
 # else -> {"status":"failed", "reason":<...>}
-
-
-
-
 
 
 @app.route("/intelliq_api/admin/resetq/<string:questionnaireID>", methods=["POST", "GET"])
@@ -191,22 +184,12 @@ def questionnaireIDreset(questionnaireID):
 # deletion of answers of the questionnaire with id questionnaireID,
 # success -> json object: {"status":"OK"}
 # else -> {"status":"failed", "reason":<...>}
-
-
-
-
-
-
-
-
 # The aboves are APIs                    --/\--
 #                                          ||
 #                                          ||
 #                                                              ||
 #                                                              ||
 # The belows are pages of the website                        --\/--
-
-
 @app.route("/intelliq_api/answerquestion/<string:session_id>/<string:questionnaire_id>/<string:question_id>")
 def setRadioQuestion(questionnaire_id, question_id, session_id):
     if question_id == '-':
@@ -215,8 +198,10 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     qNextIDs = []  # Next question is nextqID
     qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
 
-    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaire_id + '/' + question_id
-    response = urlopen(url)    # Convert bytes to string type and string type to dict
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + \
+        questionnaire_id + '/' + question_id
+    # Convert bytes to string type and string type to dict
+    response = urlopen(url)
     string = response.read().decode('utf-8')
     questionForm = json.loads(string)
     questionForm = [questionForm]
@@ -247,45 +232,71 @@ def session_answers(slug1, slug2):
     session_dict = json.loads(string)
 
     for j in session_dict['answers']:
-        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
-        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + \
+            slug1 + '/' + j['qID']
+        # Convert bytes to string type and string type to dict
+        response2 = urlopen(url2)
         string2 = response2.read().decode('utf-8')
-        bigQuestion =  json.loads(string2)
+        bigQuestion = json.loads(string2)
         j['qID'] = bigQuestion['qtext']
         for k in bigQuestion['options']:
             if k['optID'] == j['ans']:
-                j['ans']=k['opttxt']
-    
-    
-    for i in session_dict['answers']:
-        print(i)
-    print(session_dict)
+                j['ans'] = k['opttxt']
+
     return render_template("session_answers.html", session_dict=session_dict)
 
+# Give Questions of a Questionnaire(with IDs)
 
-@app.route("/intelliq_api/showquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
-def question_answers(slug1, slug2):
-    url = "http://127.0.0.1:9103/intelliq_api/getquestionanswers/" + slug1 + '/' + slug2
+
+@app.route("/intelliq_api/showquestions/<string:questionnaireID>", methods=["GET"])
+def questions(questionnaireID):
+    url = "http://127.0.0.1:9103/intelliq_api/questionnaire/" + questionnaireID
     # Convert bytes to string type and string type to dict
     response = urlopen(url)
     string = response.read().decode('utf-8')
-    session_dict = json.loads(string)
+    questionSet = json.loads(string)
 
-    for j in session_dict['answers']:
-        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
-        response2 = urlopen(url2)    # Convert bytes to string type and string type to dict
-        string2 = response2.read().decode('utf-8')
-        bigQuestion =  json.loads(string2)
-        j['qID'] = bigQuestion['qtext']
-        for k in bigQuestion['options']:
-            if k['optID'] == j['ans']:
-                j['ans']=k['opttxt']
-    
-    
-    for i in session_dict['answers']:
-        print(i)
-    print(session_dict)
-    return render_template("session_answers.html", session_dict=session_dict)
+    questionText = []
+    for q in questionSet['questions']:
+        questionText.append((q['qtext'], q['qID']))
+    print(questionText)
+    return render_template("question_statisticsList.html", questions=questionText, questionnaireID=questionnaireID)
+
+
+@app.route("/intelliq_api/showquestionanswers/<string:questionnaireID>/<string:qID>", methods=["GET"])
+def question_answers(questionnaireID, qID):
+    statistics = list(db.responses.aggregate([
+        {
+            '$match': {
+                'questionnaireID': questionnaireID,
+                'qID': qID
+            }
+        }, {
+            '$sortByCount': '$ans'
+        }
+    ]))
+
+
+@app.route("/intelliq_api/showsessions/<string:questionnaireID>", methods=["GET"])
+def sessions(questionnaireID):
+    sessions = list(db.responses.aggregate([
+        {
+            '$match': {
+                'questionnaireID': questionnaireID
+            }
+        }, {
+            '$group': {
+                '_id': None,
+                'uniqueValues': {
+                    '$addToSet': '$session'
+                }
+            }
+        }
+    ]))
+    if (not bool(sessions)):
+        return "No data", 402
+    sessions = sessions[0]['uniqueValues']
+    return render_template("question_answers.html", sessions=sessions, questionnaireID=questionnaireID)
 
 
 @app.route("/")
