@@ -283,12 +283,26 @@ def question_answers(questionnaireID, qID):
 
     qData = []  # [x times answered]
     qAnswers = []
-    for i in statistics:
-        qData.append(i['count'])
-        for j in range(len(qOptions)):
-            if i['_id']==qOptions[j][1]:
-                qAnswers.append(qOptions[j][0])
-    
+    #for i in statistics:
+     #   qData.append(i['count'])
+      #  for j in range(len(qOptions)):
+       #     if i['_id']==qOptions[j][1]:
+        #        qAnswers.append(qOptions[j][0])
+    for i in range(len(qOptions)):
+        for j in range(len(statistics)):
+            if qOptions[i][1]==statistics[j].get('_id'):
+                qAnswers.append(qOptions[i][0])
+                qData.append(statistics[j].get('count'))
+                statistics.pop(j)
+                break   
+            qAnswers.append(qOptions[i][0])
+            qData.append('0')
+            break
+
+    print(qOptions)
+    print(statistics)
+    print(qAnswers)
+    print(qData)
     
     return render_template("chart.html", qAnswers=qAnswers, qData= qData)
     
