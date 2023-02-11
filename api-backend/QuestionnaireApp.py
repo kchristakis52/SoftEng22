@@ -145,15 +145,16 @@ def healthcheck():
     return jsonify(response), 200
 
 
-@app.route("/intelliq_api/admin/questionnaire_upd/<string:source>", methods=["POST", "GET"])
-def questionnaireupd(source):
+@app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST", "GET"])
+def questionnaireupd():
     try:
+        source = request.args.get('source')
         response = {"status": "OK"}
         Collection = db.questionnaire
         with open(source, "r", encoding="utf-8") as file:
             file_data = json.load(file)
-            file_data["_iq"] = file_data.pop("questionnaireID")            
-            Collection.insert_one(file_data)
+        file_data["_id"] = file_data.pop("questionnaireID")            
+        Collection.insert_one(file_data)
         return jsonify(response), 200
     except Exception as e:
         response = {"status": "failed", "dbconnection": str(e)}
