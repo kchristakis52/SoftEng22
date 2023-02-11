@@ -407,7 +407,8 @@ db.questionnaire.insertOne({
         "options": [
           {
             "optID": "Q6TXT",
-            "opttxt": "<open text>"
+            "opttxt": "<open text>",
+            "nextqID": "-"
           }
         ]
       }
