@@ -282,7 +282,7 @@ def question_answers(questionnaireID, qID):
         qData.append(i['count'])
     print(qOptions)
     print(qData)
-    return render_template("chart.html", qOptions=map(json.dumps, qOptions), qData=map(json.dumps, qData))
+    return render_template("chart.html", qOptions= qOptions, qData= qData)
     
 
 
