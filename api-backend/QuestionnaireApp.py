@@ -18,7 +18,7 @@ app.config['JSON_AS_ASCII'] = False
 def get_questionnaire(slug):
     format = request.args.get('format', "json")
     if format != "json" and format != "csv":
-        return "Bad request", 400
+        return "Format not supported", 400
     questionnaire = db.questionnaire.find_one({"_id": slug})
     if questionnaire is None:
         return "No data", 402
@@ -39,7 +39,7 @@ def get_questionnaire(slug):
 def get_questionnairequestion(slug1, slug2):
     format = request.args.get('format', "json")
     if format != "json" and format != "csv":
-        return "Bad request", 400
+        return "Format not supported", 400
     question = list(db.questionnaire.aggregate([{'$match': {'_id': slug1}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': slug2}}, {'$unset': ['keywords', 'questionnaireTitle']}, {
                     '$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
     if (not bool(question)):
@@ -56,7 +56,7 @@ def get_questionnairequestion(slug1, slug2):
 def get_sessionanswers(slug1, slug2):
     format = request.args.get('format', "json")
     if format != "json" and format != "csv":
-        return "Bad request", 400
+        return "Format not supported", 400
     question = list(db.responses.aggregate([
         {
             '$match': {
@@ -91,7 +91,7 @@ def get_sessionanswers(slug1, slug2):
 def get_questionanswers(slug1, slug2):
     format = request.args.get('format', "json")
     if format != "json" and format != "csv":
-        return "Bad request", 400
+        return "Format not supported", 400
     question = list(db.responses.aggregate([
         {
             '$match': {
@@ -124,12 +124,40 @@ def get_questionanswers(slug1, slug2):
 
 @app.route("/intelliq_api/doanswer/<string:questionnaireID>/<string:questionID>/<string:session>/<string:optionID>", methods=["POST"])
 def postreponse(questionnaireID, questionID, session, optionID):
-    db.responses.insert_one({
-        "questionnaireID": questionnaireID,
-        "session": session,
-        "qID": questionID,
-        "ans": optionID
-    })
+    try:
+        test = list(db.questionnaire.aggregate([
+            {
+                '$match': {
+                    '_id': questionnaireID
+                }
+            }, {
+                '$unwind': {
+                    'path': '$questions'
+                }
+            }, {
+                '$match': {
+                    'questions.qID': questionID
+                }
+            }, {
+                '$unwind': {
+                    'path': '$questions.options'
+                }
+            }, {
+                '$match': {
+                    'questions.options.optID': optionID
+                }
+            },
+        ]))
+        if(len(test)==0 or len(session) != 4 or not session.isalnum()):
+            raise Exception
+        db.responses.insert_one({
+            "questionnaireID": questionnaireID,
+            "session": session,
+            "qID": questionID,
+            "ans": optionID
+        })
+    except:
+        return Response(status=400)
     return Response(status=204)
 
 # diaxeiristika
@@ -179,8 +207,8 @@ def questionnaireupd():
 def resetall():
     result = {"status": "OK"}
     try:
-        db.responses.drop()
-        db.questionnaire.drop()
+        db.responses.delete_many({})
+        db.questionnaire.delete_many({})
         return jsonify(result), 200
     except Exception as e:
         result = {"status": "failed", "reason": str(e)}
@@ -232,7 +260,7 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
 
         matches = re.findall(r"\[\*.*?\]", questionForm[0]['qtext'])
 
-        matches_txt= list(db.responses.aggregate([
+        matches_txt = list(db.responses.aggregate([
             {
                 '$match': {
                     '_id': questionnaire_id
