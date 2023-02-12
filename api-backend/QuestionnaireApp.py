@@ -151,26 +151,27 @@ def questionnaireupd():
     if file:
         try:
             filename = file.filename
-            print(filename)
             if filename.endswith('.json') or filename.endswith('.csv'):
                 Collection = db.questionnaire
                 data = json.loads(file.read().decode('utf-8'))
                 if type(data) == dict:
                     data = [data]
                 for file_data in data:
-                    #file_data["_id"] = file_data.pop("questionnaireID")
+                    file_data["_id"] = file_data.pop("questionnaireID")
                     Collection.insert_one(file_data)
                 response = {"status": "OK"}
                 return jsonify(response), 200
 
             else:
-                return "Invalid file type", 500
+                response = {"status": "failed", "reason": "Invalid file type"}
+                return jsonify(response), 500
                 
         except Exception as e:
             response = {"status": "failed", "dbconnection": str(e)}
             return jsonify(response), 500
     else:
-        return "No file found!", 500
+        response = {"status": "failed", "reason": "No file found!"}
+        return jsonify(response), 500
 
 
 @app.route("/intelliq_api/admin/resetall", methods=["POST", "GET"])
