@@ -283,6 +283,7 @@ def question_answers(questionnaireID, qID):
             '$sortByCount': '$ans'
         }
     ]))
+    print(statistics)
 
     url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaireID + '/' + qID
     
@@ -296,25 +297,15 @@ def question_answers(questionnaireID, qID):
         qOptions.append((questionForm.get('options')[i].get(
             'opttxt'), questionForm.get('options')[i].get('optID')))
 
-    qData = []  # [x times answered]
-    qAnswers = []
-    
-    diff=0
-    if len(qOptions)>len(statistics):
-        diff=len(qOptions)-len(statistics)
-        for p in range(diff):
-            statistics.append({'_id': 'Empty', 'count': 0})
+    qAnswers = [ans[0] for ans in qOptions]
+    qData = []
+    for option in qOptions:
+        qData.append(0)
+        for stat in statistics:
+            if option[1] == stat['_id']:
+                qData[-1] = stat['count']
+                break
 
-    for i in range(len(qOptions)):
-        for j in range(len(statistics)+diff):
-            if qOptions[i][1]==statistics[j].get('_id'):
-                qAnswers.append(qOptions[i][0])
-                qData.append(statistics[j].get('count'))
-                statistics.pop(j)
-                break   
-            qAnswers.append(qOptions[i][0])
-            qData.append('0')
-            break
     return render_template("chart.html", qAnswers=qAnswers, qData= qData)
     
 
