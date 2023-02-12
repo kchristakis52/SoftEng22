@@ -145,7 +145,7 @@ def healthcheck():
     return jsonify(response), 200
 
 
-@app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST", "GET"])
+@app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
 def questionnaireupd():
     file = request.files['file']
     if file:
@@ -174,18 +174,19 @@ def questionnaireupd():
         return jsonify(response), 500
 
 
-@app.route("/intelliq_api/admin/resetall", methods=["POST", "GET"])
+@app.route("/intelliq_api/admin/resetall", methods=["POST"])
 def resetall():
     result = {"status": "OK"}
     try:
-        db.responses.drop() and db.questionnaire.drop()
+        db.responses.drop() 
+        db.questionnaire.drop()
         return jsonify(result), 200
     except Exception as e:
         result = {"status": "failed", "reason": str(e)}
         return jsonify(result), 500
 
 
-@app.route("/intelliq_api/admin/resetq/<string:questionnaireID>", methods=["POST", "GET"])
+@app.route("/intelliq_api/admin/resetq/<string:questionnaireID>", methods=["POST"])
 def questionnaireIDreset(questionnaireID):
     result = {"status": "OK"}
     try:
