@@ -338,8 +338,6 @@ def session_answers(slug1, slug2):
 @app.route("/intelliq_api/showquestions/<string:questionnaireID>", methods=["GET"])
 def questions(questionnaireID):
     questionSet = db.questionnaire.find_one({"_id": questionnaireID})
-
-    print(questionSet)
     questionText = []
     for q in questionSet['questions']:
         if len(q['options']) == 1:
@@ -363,8 +361,7 @@ def question_answers(questionnaireID, qID):
             '$sortByCount': '$ans'
         }
     ]))
-    print(statistics)
-
+    
     url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaireID + '/' + qID
 
     response = urlopen(url)
