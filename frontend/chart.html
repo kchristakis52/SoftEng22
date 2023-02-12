@@ -1,14 +1,68 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-  
+  <style>
+    /* Add dark mode styles */
+    .dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+    
+    #theme-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #4caf50;
+      color: #fff;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    #theme-btn:hover {
+      background-color: #3e8e41;
+    }
+  </style>
 </head>
+
 <body>
+  <script>
+    function changeTheme() {
+      let body = document.querySelector("body");
+      let btn = document.querySelector("#theme-btn");
+      if (body.classList.contains("dark-mode")) {
+        body.classList.remove("dark-mode");
+        btn.innerHTML = "Dark Mode";
+        localStorage.setItem("theme", "light");
+      } else {
+        body.classList.add("dark-mode");
+        btn.innerHTML = "Light Mode";
+        localStorage.setItem("theme", "dark");
+      }
+    }
+    window.addEventListener("load", function () {
+      let body = document.querySelector("body");
+      let btn = document.querySelector("#theme-btn");
+      let theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        body.classList.add("dark-mode");
+        btn.innerHTML = "Light Mode";
+      } else {
+        body.classList.remove("dark-mode");
+        btn.innerHTML = "Dark Mode";
+      }
+    });
+  </script>
+
+  <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
   <div style="width:50%">
     <canvas id="pieChart"></canvas>
   </div>
-  
+
   <script>
     const optionColours = ["Chartreuse", "DarkOrange", "Yellow", "Crimson", "RoyalBlue", "RebeccaPurple"];
 
@@ -16,20 +70,19 @@
     var myPieChart = new Chart(ctx, {
       type: 'pie',
       data: {
-      
-        labels: {{qAnswers | tojson}}
+
+        labels: {{ qAnswers | tojson}}
         ,
-        datasets: [{
-          data: {{qData | tojson}},
-          backgroundColor: optionColours,
-          borderColor: "black",
-          borderWidth: 1
+    datasets: [{
+      data: {{ qData | tojson}},
+      backgroundColor: optionColours,
+      borderColor: "black",
+      borderWidth: 1
         }]
       }
     });
   </script>
-  
+
 </body>
+
 </html>
-
-

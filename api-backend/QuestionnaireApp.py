@@ -257,47 +257,49 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             qNextIDs.append(questionForm[0].get('options')[i].get('nextqID'))
             qDiffOptions.append(questionForm[0].get('options')[i].get('optID'))
         # questionForm[0]['qtext'] = re.sub(r"\[\*.*?\]", "text", questionForm[0]['qtext'])
+    
+        matches = re.findall(r"\[\*(.*?)\]", questionForm[0]['qtext'])
+        if matches:
+            matches_txt= list(db.questionnaire.aggregate([
+                {
+                    '$match': {
+                        '_id': questionnaire_id
+                    }
+                }, {
+                    '$unwind': {
+                        'path': '$questions'
+                    }
+                }, {
+                    '$match': {
+                        'questions.qID': matches[1]
+                    }
+                }, {
+                    '$unset': [
+                        'keywords', 'questionnaireTitle', 'questions.required', 'questions.type'
+                    ]
+                }, {
+                    '$unwind': {
+                        'path': '$questions.options'
+                    }
+                }, {
+                    '$match': {
+                        'questions.options.optID': matches[0]
+                    }
+                }, {
+                    '$project': {
+                        'qtext': '$questions.qtext',
+                        'opttxt': '$questions.options.opttxt'
+                    }
+                }
+            ]))
 
-        matches = re.findall(r"\[\*.*?\]", questionForm[0]['qtext'])
+            question = "\"" + matches_txt[0]['qtext'] + "\""
+            answer = "\"" + matches_txt[0]['opttxt'] + "\""
 
-        matches_txt = list(db.responses.aggregate([
-            {
-                '$match': {
-                    '_id': questionnaire_id
-                }
-            }, {
-                '$unwind': {
-                    'path': '$questions'
-                }
-            }, {
-                '$match': {
-                    'questions.qID': matches[1]
-                }
-            }, {
-                '$unset': [
-                    'keywords', 'questionnaireTitle', 'questions.required', 'questions.type'
-                ]
-            }, {
-                '$unwind': {
-                    'path': '$questions.options'
-                }
-            }, {
-                '$match': {
-                    'questions.options.optID': matches[0]
-                }
-            }, {
-                '$project': {
-                    'qtext': '$questions.qtext',
-                    'opttxt': '$questions.options.opttxt'
-                }
-            }
-        ]))
+            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace("[*"+matches[0]+"]", answer)
+            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace("[*"+matches[1]+"]", question)
 
-        for match in matches:
-            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
-                match, "text")
 
-        print(questionForm[0]['qtext'])
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
 
