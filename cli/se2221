@@ -79,9 +79,10 @@ def resetq(questionnaire_id):
 
 @cli.command()
 @click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
-def questionnaire(questionnaire_id):
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def questionnaire(questionnaire_id, format):
     """Print the selected questionnaire"""
-    url = baseURL + "/questionnaire/" + questionnaire_id
+    url = baseURL + "/questionnaire/" + questionnaire_id + "?format=" + format
     response = requests.get(url)
     click.echo(response.text)
     pass
@@ -89,9 +90,10 @@ def questionnaire(questionnaire_id):
 @cli.command()
 @click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
 @click.option('--question_id', prompt='Type the question id', help='Takes the question id')
-def question(questionnaire_id, question_id):
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def question(questionnaire_id, question_id, format):
     """Print the selected question of a questionnaire"""
-    url = baseURL + "/question/" + questionnaire_id + "/" + question_id
+    url = baseURL + "/question/" + questionnaire_id + "/" + question_id + "?format=" + format
     response = requests.get(url)
     click.echo(response.text)
     pass
@@ -111,9 +113,10 @@ def doanswer(questionnaire_id, question_id, session_id, option_id):
 @cli.command()
 @click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
 @click.option('--session_id', prompt='Type the session id', help='Takes the session id')
-def getsessionanswers(questionnaire_id, session_id):
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def getsessionanswers(questionnaire_id, session_id, format):
     """Get answers from specific session in questionnaire"""
-    url = baseURL + "/getsessionanswers/" + questionnaire_id + "/" + session_id
+    url = baseURL + "/getsessionanswers/" + questionnaire_id + "/" + session_id + "?format=" + format
     response = requests.get(url)
     click.echo(response.text)
     pass
@@ -121,9 +124,10 @@ def getsessionanswers(questionnaire_id, session_id):
 @cli.command()
 @click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
 @click.option('--question_id', prompt='Type the question id', help='Takes the question id')
-def getquestionanswers(questionnaire_id, question_id):
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def getquestionanswers(questionnaire_id, question_id, format):
     """Get answers from specific question in questionnaire"""
-    url = baseURL + "/getquestionanswers/" + questionnaire_id + "/" + question_id
+    url = baseURL + "/getquestionanswers/" + questionnaire_id + "/" + question_id + "?format=" + format
     response = requests.get(url)
     click.echo(response.text)
     pass
