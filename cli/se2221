@@ -71,7 +71,7 @@ def questionnaire_upd(source):
 @cli.command()
 @click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
 def resetq(questionnaire_id):
-    """Reset all answers in Database for specific Questionnaire"""
+    """Reset all answers for specific Questionnaire"""
     url = baseURL + "/admin/resetq/" + questionnaire_id
     response = requests.post(url=url)
     click.echo(response.text)
