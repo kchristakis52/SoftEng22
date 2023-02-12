@@ -1,0 +1,138 @@
+#!/bin/python3
+## Linux
+# The first line is used to make the file executable as a bash script
+# using the command: ./se2221 [OPTIONS] COMMAND [ARGS]...
+# make it executable: chmod +x se2221
+## Windows
+# The first line does not affect the programm, it is treated as comment
+# run script as python script: python3 se2221 [OPTIONS] COMMAND [ARGS]...
+
+import csv
+import json
+import ast
+import click
+import requests
+
+baseURL = "http://127.0.0.1:9103/intelliq_api"
+
+@click.group()
+def cli():
+    """CLI for Questionnaire API"""
+    pass
+
+
+@cli.command()
+def healthcheck():
+    """Check health status of server"""
+    url = baseURL + "/admin/healthcheck"
+    response = requests.get(url=url)
+    click.echo(response.text) 
+    pass
+
+@cli.command()
+def resetall():
+    """Reset EVERYTHING in Database"""
+    url = baseURL + "/admin/resetall"
+    response = requests.post(url=url)
+    click.echo(response.text) 
+    pass
+
+@cli.command()
+@click.option('--source', prompt='file path:', help='Place file path')
+def questionnaire_upd(source):
+    """Upload questionnaire to database"""
+    if source.endswith('.json'):
+        file = {'file': open(source, 'rb')}
+    elif source.endswith('.csv'):
+        # Open the CSV file
+        with open(source, 'r') as file:
+            # Isolate file name (drop file path)
+            filename = file.name.split("/")[-1]
+            reader = csv.DictReader(file)
+            data = list(reader)
+        # Convert strings to numbers and booleans where applicable
+        for i in range(len(data)):
+            for key, value in data[i].items():
+                try:
+                    data[i][key] = ast.literal_eval(value)
+                except (ValueError, SyntaxError):
+                    pass
+        # Convert the data to JSON format
+        data_json = json.dumps(data)
+        file = {'file': (filename, data_json)}
+    else:
+        click.echo("Only .json and .csv file formats are supported")
+        return
+    url = baseURL + "/admin/questionnaire_upd"
+    response = requests.post(url, files=file)
+    click.echo(response.text)
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+def resetq(questionnaire_id):
+    """Reset all answers for specific Questionnaire"""
+    url = baseURL + "/admin/resetq/" + questionnaire_id
+    response = requests.post(url=url)
+    click.echo(response.text)
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def questionnaire(questionnaire_id, format):
+    """Print the selected questionnaire"""
+    url = baseURL + "/questionnaire/" + questionnaire_id + "?format=" + format
+    response = requests.get(url)
+    click.echo(response.text)
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--question_id', prompt='Type the question id', help='Takes the question id')
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def question(questionnaire_id, question_id, format):
+    """Print the selected question of a questionnaire"""
+    url = baseURL + "/question/" + questionnaire_id + "/" + question_id + "?format=" + format
+    response = requests.get(url)
+    click.echo(response.text)
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--question_id', prompt='<Type the question id', help='Takes the question id')
+@click.option('--session_id', prompt='Type the session id', help='Takes the session id')
+@click.option('--option_id', prompt='Type the option id', help='Takes the option id')
+def doanswer(questionnaire_id, question_id, session_id, option_id):
+    """Answer question in questionnaire"""
+    url = baseURL + "/doanswer/" + questionnaire_id + "/" + question_id + "/" + session_id + "/" + option_id
+    response = requests.post(url)
+    click.echo(response.text)
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--session_id', prompt='Type the session id', help='Takes the session id')
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def getsessionanswers(questionnaire_id, session_id, format):
+    """Get answers from specific session in questionnaire"""
+    url = baseURL + "/getsessionanswers/" + questionnaire_id + "/" + session_id + "?format=" + format
+    response = requests.get(url)
+    click.echo(response.text)
+    pass
+
+@cli.command()
+@click.option('--questionnaire_id', prompt='Type the questionnaire id', help='Takes the questionnaire id')
+@click.option('--question_id', prompt='Type the question id', help='Takes the question id')
+@click.option('--format', type=click.Choice(['csv', 'json']), default='json' , help='The format of displayed answer')
+def getquestionanswers(questionnaire_id, question_id, format):
+    """Get answers from specific question in questionnaire"""
+    url = baseURL + "/getquestionanswers/" + questionnaire_id + "/" + question_id + "?format=" + format
+    response = requests.get(url)
+    click.echo(response.text)
+    pass
+
+
+
+if __name__ == '__main__':
+    cli()

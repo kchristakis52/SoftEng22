@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      padding: 50px 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .questionnaire {
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .question-response {
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .question-response:last-child {
+      margin-bottom: 0;
+    }
+
+    .question-response:hover {
+      background-color: #f9f9f9;
+    }
+
+    .question {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .response {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    /* Add dark mode styles */
+    .dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .dark-mode h1 {
+      color: #fff;
+    }
+
+    #theme-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #4caf50;
+      color: #fff;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    #theme-btn:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function changeTheme() {
+      let body = document.querySelector("body");
+      let btn = document.querySelector("#theme-btn");
+      if (body.classList.contains("dark-mode")) {
+        body.classList.remove("dark-mode");
+        btn.innerHTML = "Dark Mode";
+        localStorage.setItem("theme", "light");
+      } else {
+        body.classList.add("dark-mode");
+        btn.innerHTML = "Light Mode";
+        localStorage.setItem("theme", "dark");
+      }
+    }
+    window.addEventListener("load", function () {
+      let body = document.querySelector("body");
+      let btn = document.querySelector("#theme-btn");
+      let theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        body.classList.add("dark-mode");
+        btn.innerHTML = "Light Mode";
+      } else {
+        body.classList.remove("dark-mode");
+        btn.innerHTML = "Dark Mode";
+      }
+    });
+  </script>
+  <button id="theme-btn" onclick="changeTheme()">Dark Mode</button>
+
+  <div class="container">
+    <h1>Questionnaire Responses</h1>
+
+    {% for answer in session_dict['answers'] %}
+    <div class="questionnaire">
+      <div class="question-response">
+        <p class="question"> {{ answer['qID'] }} </p>
+        <p class="response"> {{ answer['ans'] }} </p>
+      </div>
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>

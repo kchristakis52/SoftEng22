@@ -1,16 +1,19 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %} {% block title %}
+<title>Intelliq</title>
+{% endblock %} {% block content %}
+<form>
+  <h1>Intelliq</h1>
 
-<head>
-    <title>College Student Questionnaire</title>
-    <style>
-        /* Add some basic styling */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+  <h2>Choose the questionnaire you want to answer</h2>
+  <ul>
+    {% for item in questionnaires %}
+    <!--- The target URL will change to a new one(this is reserved for the api) -->
+    <!--<li><a href="intelliq_api/questionnaire/{{ item[0] }}">{{ item[1] }}</a></li>-->
+    <li><a href="/intelliq_api/answerquestion/{{session_id}}/{{item[0]}}/{{item[2]}}">{{item[1]}}</a></li>
+    {% endfor %}
+  </ul>
 
+<<<<<<< HEAD
         /* Center the form on the page */
         form {
             display: flex;
@@ -181,3 +184,20 @@
 </body>
 
 </html>
+=======
+  <h2>Choose a questionnaire to see the responses</h2>
+  <ul>
+    {% for item in questionnaires %}
+    <li><a href="/intelliq_api/showsessions/{{ item[0] }}">{{ item[1] }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>Choose a questionnaire to see the Statistics</h2>
+  
+  <ul>
+  {% for item in questionnaires %}
+    <li><a href="/intelliq_api/showquestions/{{ item[0] }}">{{ item[1] }}</a></li>
+  {% endfor %}
+  </ul>
+</form>
+{% endblock %}
+>>>>>>> e791f03d215e3e94f4662db554cf11dfb6b4a2ca
