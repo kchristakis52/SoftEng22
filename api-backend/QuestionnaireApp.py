@@ -144,11 +144,17 @@ def postreponse(questionnaireID, questionID, session, optionID):
                 }
             }, {
                 '$match': {
-                    'questions.options.optID': optionID
+                    '$or': [
+                        {
+                            'questions.options.optID': optionID
+                        }, {
+                            'questions.options.opttxt': '<open string>'
+                        }
+                    ]
                 }
             },
         ]))
-        if(len(test)==0 or len(session) != 4 or not session.isalnum()):
+        if (len(test) == 0 or len(session) != 4 or not session.isalnum()):
             raise Exception
         db.responses.insert_one({
             "questionnaireID": questionnaireID,
@@ -257,10 +263,10 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             qNextIDs.append(questionForm[0].get('options')[i].get('nextqID'))
             qDiffOptions.append(questionForm[0].get('options')[i].get('optID'))
         # questionForm[0]['qtext'] = re.sub(r"\[\*.*?\]", "text", questionForm[0]['qtext'])
-    
+
         matches = re.findall(r"\[\*(.*?)\]", questionForm[0]['qtext'])
         if matches:
-            matches_txt= list(db.questionnaire.aggregate([
+            matches_txt = list(db.questionnaire.aggregate([
                 {
                     '$match': {
                         '_id': questionnaire_id
@@ -296,9 +302,10 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             question = "\"" + matches_txt[0]['qtext'] + "\""
             answer = "\"" + matches_txt[0]['opttxt'] + "\""
 
-            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace("[*"+matches[0]+"]", answer)
-            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace("[*"+matches[1]+"]", question)
-
+            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
+                "[*"+matches[0]+"]", answer)
+            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
+                "[*"+matches[1]+"]", question)
 
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
