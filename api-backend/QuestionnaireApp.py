@@ -48,7 +48,7 @@ def get_questionnairequestion(slug1, slug2):
         df = pd.json_normalize(question[0], record_path=['options'], meta=[
                                '_id', 'qID', 'qtext', 'required', 'type'])
         return Response(df.to_csv(), mimetype="text/csv", status=200)
-    
+
     return jsonify(question[0]), 200
 
 
@@ -166,7 +166,7 @@ def questionnaireupd():
             else:
                 response = {"status": "failed", "reason": "Invalid file type"}
                 return jsonify(response), 500
-                
+
         except Exception as e:
             response = {"status": "failed", "dbconnection": str(e)}
             return jsonify(response), 500
@@ -179,7 +179,7 @@ def questionnaireupd():
 def resetall():
     result = {"status": "OK"}
     try:
-        db.responses.drop() 
+        db.responses.drop()
         db.questionnaire.drop()
         return jsonify(result), 200
     except Exception as e:
@@ -213,7 +213,8 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     qNextIDs = []  # Next question is nextqID
     qDiffOptions = []  # optID(Yes) optID(No) optID(Maybe)
 
-    url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaire_id + '/' + question_id
+    url = "http://127.0.0.1:9103/intelliq_api/question/" + \
+        questionnaire_id + '/' + question_id
     # Convert bytes to string type and string type to dict
     response = urlopen(url)
     string = response.read().decode('utf-8')
@@ -227,14 +228,46 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             qOptions.append(questionForm[0].get('options')[i].get('opttxt'))
             qNextIDs.append(questionForm[0].get('options')[i].get('nextqID'))
             qDiffOptions.append(questionForm[0].get('options')[i].get('optID'))
-        #questionForm[0]['qtext'] = re.sub(r"\[\*.*?\]", "text", questionForm[0]['qtext'])
-        
+        # questionForm[0]['qtext'] = re.sub(r"\[\*.*?\]", "text", questionForm[0]['qtext'])
+
         matches = re.findall(r"\[\*.*?\]", questionForm[0]['qtext'])
-        
-        # make query
-        
+
+        matches_txt= list(db.responses.aggregate([
+            {
+                '$match': {
+                    '_id': questionnaire_id
+                }
+            }, {
+                '$unwind': {
+                    'path': '$questions'
+                }
+            }, {
+                '$match': {
+                    'questions.qID': matches[1]
+                }
+            }, {
+                '$unset': [
+                    'keywords', 'questionnaireTitle', 'questions.required', 'questions.type'
+                ]
+            }, {
+                '$unwind': {
+                    'path': '$questions.options'
+                }
+            }, {
+                '$match': {
+                    'questions.options.optID': matches[0]
+                }
+            }, {
+                '$project': {
+                    'qtext': '$questions.qtext',
+                    'opttxt': '$questions.options.opttxt'
+                }
+            }
+        ]))
+
         for match in matches:
-            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(match, "text")
+            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
+                match, "text")
 
         print(questionForm[0]['qtext'])
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
@@ -249,8 +282,9 @@ def session_answers(slug1, slug2):
     session_dict = json.loads(string)
 
     for j in session_dict['answers']:
-        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + slug1 + '/' + j['qID']
-        
+        url2 = "http://127.0.0.1:9103/intelliq_api/question/" + \
+            slug1 + '/' + j['qID']
+
         response2 = urlopen(url2)
         string2 = response2.read().decode('utf-8')
         bigQuestion = json.loads(string2)
@@ -271,7 +305,7 @@ def questions(questionnaireID):
     print(questionSet)
     questionText = []
     for q in questionSet['questions']:
-        if len(q['options'])==1:
+        if len(q['options']) == 1:
             continue
         questionText.append((q['qtext'], q['qID']))
 
@@ -295,7 +329,7 @@ def question_answers(questionnaireID, qID):
     print(statistics)
 
     url = "http://127.0.0.1:9103/intelliq_api/question/" + questionnaireID + '/' + qID
-    
+
     response = urlopen(url)
     string = response.read().decode('utf-8')
     questionForm = json.loads(string)
@@ -315,8 +349,8 @@ def question_answers(questionnaireID, qID):
                 qData[-1] = stat['count']
                 break
 
-    return render_template("chart.html", qAnswers=qAnswers, qData= qData)
-    
+    return render_template("chart.html", qAnswers=qAnswers, qData=qData)
+
 
 @app.route("/intelliq_api/showsessions/<string:questionnaireID>", methods=["GET"])
 def sessions(questionnaireID):
