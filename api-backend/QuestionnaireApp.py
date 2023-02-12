@@ -6,6 +6,7 @@ import json
 from urllib.request import urlopen
 import pandas as pd
 from pymongo.errors import ConnectionFailure
+import re
 
 app = Flask(__name__, template_folder="../frontend")
 client = pymongo.MongoClient("localhost", 27017)
@@ -226,7 +227,16 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             qOptions.append(questionForm[0].get('options')[i].get('opttxt'))
             qNextIDs.append(questionForm[0].get('options')[i].get('nextqID'))
             qDiffOptions.append(questionForm[0].get('options')[i].get('optID'))
+        #questionForm[0]['qtext'] = re.sub(r"\[\*.*?\]", "text", questionForm[0]['qtext'])
+        
+        matches = re.findall(r"\[\*.*?\]", questionForm[0]['qtext'])
+        
+        # make query
+        
+        for match in matches:
+            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(match, "text")
 
+        print(questionForm[0]['qtext'])
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
 
@@ -262,6 +272,7 @@ def questions(questionnaireID):
     string = response.read().decode('utf-8')
     questionSet = json.loads(string)
 
+    print(questionSet)
     questionText = []
     for q in questionSet['questions']:
         questionText.append((q['qtext'], q['qID']))
