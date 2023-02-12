@@ -29,19 +29,51 @@
     margin-top: 20px;
   }
 </style>
-<!--Ena Duo test-->
-<!-- Kainourgio test -->
-<form action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}">
+<form id="myForm" action="/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}">
   <h2>{{Question}}</h2>
   <input id="optionID" type="text" placeholder="Type your answer here">
   <br><br>
-  <input type="submit" value="Submit" onclick='send_post(document.getElementById("optionID").value)'>
+  <input type="submit" value="Submit">
 </form>
 
 <script>
-  function send_post(x) {
-    url = 'http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + x
+  const input = document.getElementById("optionID");
+  input.addEventListener("input", function() {
+    if (input.value === ".." || input.value.includes("/") || input.value.includes("\\")) {
+      input.style.backgroundColor = "pink";
+    } else {
+      input.style.backgroundColor = "white";
+    }
+  });
+
+  document.getElementById("myForm").addEventListener("submit", function (event)  {
+    let answer = document.getElementById("optionID").value;
+    if (!answer) {
+      alert("Please enter an answer to the question.");
+      event.preventDefault();
+      return;
+    }
+    if (answer === "..") {
+      alert("Answer must not be double dots (..)");
+      event.preventDefault();
+      return;
+    }
+    if (answer.includes("/") || answer.includes("\\")) {
+      alert("Answer must not contain forward slashes (/), or backslashes (\\)");
+      event.preventDefault();
+      return;
+    }
+
+    url = 'http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + answer
     fetch(url, {method:'POST'})
-  }
+    .then(response => {
+    url = `/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}`;
+    document.getElementById("myForm").action = url;
+    document.getElementById("myForm").submit();
+  })
+
+  event.preventDefault();
+    
+  });
 </script>
 {% endblock %}
