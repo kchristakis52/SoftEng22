@@ -256,14 +256,12 @@ def session_answers(slug1, slug2):
 
 @app.route("/intelliq_api/showquestions/<string:questionnaireID>", methods=["GET"])
 def questions(questionnaireID):
-    url = "http://127.0.0.1:9103/intelliq_api/questionnaire/" + questionnaireID
-    
-    response = urlopen(url)
-    string = response.read().decode('utf-8')
-    questionSet = json.loads(string)
+    questionSet = db.questionnaire.find_one({"_id": questionnaireID})
 
     questionText = []
     for q in questionSet['questions']:
+        if len(q['options'])==1:
+            continue
         questionText.append((q['qtext'], q['qID']))
 
     return render_template("question_List.html", questions=questionText, questionnaireID=questionnaireID)
