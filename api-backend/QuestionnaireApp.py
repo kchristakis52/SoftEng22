@@ -16,110 +16,121 @@ app.config['JSON_AS_ASCII'] = False
 
 @app.route("/intelliq_api/questionnaire/<string:slug>", methods=["GET"])
 def get_questionnaire(slug):
-    format = request.args.get('format', "json")
-    if format != "json" and format != "csv":
-        return "Format not supported", 400
-    questionnaire = db.questionnaire.find_one({"_id": slug})
-    if questionnaire is None:
-        return "No data", 402
-    for question in questionnaire["questions"]:
-        del question["options"]
-    if (format == "csv"):
-        concatstring = ''
-        for i in questionnaire['keywords']:
-            concatstring += i+" "
-        questionnaire['keywords'] = concatstring
-        df = pd.json_normalize(questionnaire, record_path=['questions'], meta=[
-                               '_id', 'questionnaireTitle', 'keywords'])
-        return Response(df.to_csv(), mimetype="text/csv", status=200)
-    return jsonify(questionnaire), 200
+    try:
+        format = request.args.get('format', "json")
+        if format != "json" and format != "csv":
+            return "Format not supported", 400
+        questionnaire = db.questionnaire.find_one({"_id": slug})
+        if questionnaire is None:
+            return "No data", 402
+        for question in questionnaire["questions"]:
+            del question["options"]
+        if (format == "csv"):
+            concatstring = ''
+            for i in questionnaire['keywords']:
+                concatstring += i+" "
+            questionnaire['keywords'] = concatstring
+            df = pd.json_normalize(questionnaire, record_path=['questions'], meta=[
+                                '_id', 'questionnaireTitle', 'keywords'])
+            return Response(df.to_csv(), mimetype="text/csv", status=200)
+        return jsonify(questionnaire), 200
+    except Exception as e:
+        return (str(e), 500)
 
 
 @app.route("/intelliq_api/question/<string:slug1>/<string:slug2>", methods=["GET"])
 def get_questionnairequestion(slug1, slug2):
-    format = request.args.get('format', "json")
-    if format != "json" and format != "csv":
-        return "Format not supported", 400
-    question = list(db.questionnaire.aggregate([{'$match': {'_id': slug1}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': slug2}}, {'$unset': ['keywords', 'questionnaireTitle']}, {
-                    '$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
-    if (not bool(question)):
-        return "No data", 402
-    if (format == "csv"):
-        df = pd.json_normalize(question[0], record_path=['options'], meta=[
-                               '_id', 'qID', 'qtext', 'required', 'type'])
-        return Response(df.to_csv(), mimetype="text/csv", status=200)
+    try:
+        format = request.args.get('format', "json")
+        if format != "json" and format != "csv":
+            return "Format not supported", 400
+        question = list(db.questionnaire.aggregate([{'$match': {'_id': slug1}}, {'$unwind': {'path': '$questions'}}, {'$match': {'questions.qID': slug2}}, {'$unset': ['keywords', 'questionnaireTitle']}, {
+                        '$project': {'qID': '$questions.qID', 'qtext': '$questions.qtext', 'required': '$questions.required', 'type': '$questions.type', 'options': '$questions.options'}}]))
+        if (not bool(question)):
+            return "No data", 402
+        if (format == "csv"):
+            df = pd.json_normalize(question[0], record_path=['options'], meta=[
+                                '_id', 'qID', 'qtext', 'required', 'type'])
+            return Response(df.to_csv(), mimetype="text/csv", status=200)
 
-    return jsonify(question[0]), 200
+        return jsonify(question[0]), 200
+    except Exception as e:
+        return (str(e), 500)
 
 
 @app.route("/intelliq_api/getsessionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def get_sessionanswers(slug1, slug2):
-    format = request.args.get('format', "json")
-    if format != "json" and format != "csv":
-        return "Format not supported", 400
-    question = list(db.responses.aggregate([
-        {
-            '$match': {
-                'questionnaireID': slug1,
-                'session': slug2
-            }
-        }, {
-            '$group': {
-                '_id': '$questionnaireID',
-                'session': {
-                    '$first': '$session'
-                },
-                'answers': {
-                    '$push': {
-                        'qID': '$qID',
-                        'ans': '$ans'
+    try:
+        format = request.args.get('format', "json")
+        if format != "json" and format != "csv":
+            return "Format not supported", 400
+        question = list(db.responses.aggregate([
+            {
+                '$match': {
+                    'questionnaireID': slug1,
+                    'session': slug2
+                }
+            }, {
+                '$group': {
+                    '_id': '$questionnaireID',
+                    'session': {
+                        '$first': '$session'
+                    },
+                    'answers': {
+                        '$push': {
+                            'qID': '$qID',
+                            'ans': '$ans'
+                        }
                     }
                 }
             }
-        }
-    ]))
-    if (not bool(question)):
-        return "No data", 402
-    if (format == "csv"):
-        df = pd.json_normalize(question[0], record_path=[
-                               'answers'], meta=['_id', 'session'])
-        return Response(df.to_csv(), mimetype="text/csv", status=200)
-    return jsonify(question[0]), 200
-
+        ]))
+        if (not bool(question)):
+            return "No data", 402
+        if (format == "csv"):
+            df = pd.json_normalize(question[0], record_path=[
+                                'answers'], meta=['_id', 'session'])
+            return Response(df.to_csv(), mimetype="text/csv", status=200)
+        return jsonify(question[0]), 200
+    except Exception as e:
+        return (str(e), 500)
 
 @app.route("/intelliq_api/getquestionanswers/<string:slug1>/<string:slug2>", methods=["GET"])
 def get_questionanswers(slug1, slug2):
-    format = request.args.get('format', "json")
-    if format != "json" and format != "csv":
-        return "Format not supported", 400
-    question = list(db.responses.aggregate([
-        {
-            '$match': {
-                'questionnaireID': slug1,
-                'qID': slug2
-            }
-        }, {
-            '$group': {
-                '_id': '$questionnaireID',
-                'qID': {
-                    '$first': '$qID'
-                },
-                'answers': {
-                    '$push': {
-                        'session': '$session',
-                        'ans': '$ans'
+    try:
+        format = request.args.get('format', "json")
+        if format != "json" and format != "csv":
+            return "Format not supported", 400
+        question = list(db.responses.aggregate([
+            {
+                '$match': {
+                    'questionnaireID': slug1,
+                    'qID': slug2
+                }
+            }, {
+                '$group': {
+                    '_id': '$questionnaireID',
+                    'qID': {
+                        '$first': '$qID'
+                    },
+                    'answers': {
+                        '$push': {
+                            'session': '$session',
+                            'ans': '$ans'
+                        }
                     }
                 }
             }
-        }
-    ]))
-    if (not bool(question)):
-        return "No data", 402
-    if (format == "csv"):
-        df = pd.json_normalize(question[0], record_path=[
-                               'answers'], meta=['_id', 'qID'])
-        return Response(df.to_csv(), mimetype="text/csv", status=200)
-    return jsonify(question[0]), 200
+        ]))
+        if (not bool(question)):
+            return "No data", 402
+        if (format == "csv"):
+            df = pd.json_normalize(question[0], record_path=[
+                                'answers'], meta=['_id', 'qID'])
+            return Response(df.to_csv(), mimetype="text/csv", status=200)
+        return jsonify(question[0]), 200
+    except Exception as e:
+        return (str(e),500)
 
 
 @app.route("/intelliq_api/doanswer/<string:questionnaireID>/<string:questionID>/<string:session>/<string:optionID>", methods=["POST"])
@@ -199,14 +210,14 @@ def questionnaireupd():
 
             else:
                 response = {"status": "failed", "reason": "Invalid file type"}
-                return jsonify(response), 500
+                return jsonify(response), 400
 
         except Exception as e:
-            response = {"status": "failed", "dbconnection": str(e)}
+            response = {"status": "failed", "reason": str(e)}
             return jsonify(response), 500
     else:
         response = {"status": "failed", "reason": "No file found!"}
-        return jsonify(response), 500
+        return jsonify(response), 400
 
 
 @app.route("/intelliq_api/admin/resetall", methods=["POST"])
