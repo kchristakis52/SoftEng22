@@ -3,20 +3,20 @@
 ## Group: softeng2022-21
 
 ## Members: 
-+Ιωάννης Μπέλλος el19067
-+Κωνσταντίνος Χριστάκης el19646
-+Βασίλειος Αλιφραγκής el19952
-+Στέφανος Αβράμης el21724
-+Γεώργιος Αναστασίου el19112
-+Σπύρος Παπαδόπουλος el19058
++ Ιωάννης Μπέλλος el19067
++ Κωνσταντίνος Χριστάκης el19646
++ Βασίλειος Αλιφραγκής el19952
++ Στέφανος Αβράμης el21724
++ Γεώργιος Αναστασίου el19112
++ Σπύρος Παπαδόπουλος el19058
 
 ## Stack:
 
-+Database: MongoDB
-+Backend: Flask Python
-+CLI: Click Python
-+Frontend: HTML/CSS/JS
-+Postman (for testing the endpoints)
++ Database: MongoDB
++ Backend: Flask Python
++ CLI: Click Python
++ Frontend: HTML/CSS/JS
++ Postman (for testing the endpoints)
 
 ## Instructions
 
