@@ -64,7 +64,7 @@
       return;
     }
 
-    url = 'http://127.0.0.1:9103/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + answer
+    url = '/intelliq_api/doanswer/{{questionnaire_id}}/{{question_id}}/{{session_id}}/' + answer
     fetch(url, {method:'POST'})
     .then(response => {
     url = `/intelliq_api/answerquestion/{{session_id}}/{{questionnaire_id}}/{{nextQuestion_id}}`;
