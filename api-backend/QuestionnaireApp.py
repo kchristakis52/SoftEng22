@@ -193,9 +193,9 @@ def healthcheck():
 
 @app.route("/intelliq_api/admin/questionnaire_upd", methods=["POST"])
 def questionnaireupd():
-    file = request.files['file']
-    if file:
-        try:
+    try:
+        file = request.files['file']
+        if file:
             filename = file.filename
             if filename.endswith('.json') or filename.endswith('.csv'):
                 Collection = db.questionnaire
@@ -211,13 +211,13 @@ def questionnaireupd():
             else:
                 response = {"status": "failed", "reason": "Invalid file type"}
                 return jsonify(response), 400
-
-        except Exception as e:
-            response = {"status": "failed", "reason": str(e)}
-            return jsonify(response), 500
-    else:
-        response = {"status": "failed", "reason": "No file found!"}
-        return jsonify(response), 400
+                
+        else:
+            response = {"status": "failed", "reason": "No file found!"}
+            return jsonify(response), 400
+    except Exception as e:
+        response = {"status": "failed", "reason": str(e)}
+        return jsonify(response), 500
 
 
 @app.route("/intelliq_api/admin/resetall", methods=["POST"])
@@ -266,6 +266,50 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
     questionForm = json.loads(string)
     questionForm = [questionForm]
 
+    matches = re.findall(r"\[\*(.*?)\]", questionForm[0]['qtext'])
+    if matches:
+        matches_txt = list(db.questionnaire.aggregate([
+            {
+                '$match': {
+                    '_id': questionnaire_id
+                }
+            }, {
+                '$unwind': {
+                    'path': '$questions'
+                }
+            }, {
+                '$match': {
+                    'questions.qID': matches[1]
+                }
+            }, {
+                '$unset': [
+                    'keywords', 'questionnaireTitle', 'questions.required', 'questions.type'
+                ]
+            }, {
+                '$unwind': {
+                    'path': '$questions.options'
+                }
+            }, {
+                '$match': {
+                    'questions.options.optID': matches[0]
+                }
+            }, {
+                '$project': {
+                    'qtext': '$questions.qtext',
+                    'opttxt': '$questions.options.opttxt'
+                }
+            }
+        ]))
+
+        question = "\"" + matches_txt[0]['qtext'] + "\""
+        answer = "\"" + matches_txt[0]['opttxt'] + "\""
+
+        questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
+            "[*"+matches[0]+"]", answer)
+        questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
+            "[*"+matches[1]+"]", question)
+
+
     if (len(questionForm[0].get('options'))) == 1:
         return render_template("question_textfield.html", Question=questionForm[0].get('qtext'), questionnaire_id=questionnaire_id, nextQuestion_id=questionForm[0].get('options')[0].get('nextqID'), optionID=questionForm[0].get('options')[0].get('optID'), question_id=question_id, session_id=session_id)
     else:
@@ -275,48 +319,6 @@ def setRadioQuestion(questionnaire_id, question_id, session_id):
             qDiffOptions.append(questionForm[0].get('options')[i].get('optID'))
         # questionForm[0]['qtext'] = re.sub(r"\[\*.*?\]", "text", questionForm[0]['qtext'])
 
-        matches = re.findall(r"\[\*(.*?)\]", questionForm[0]['qtext'])
-        if matches:
-            matches_txt = list(db.questionnaire.aggregate([
-                {
-                    '$match': {
-                        '_id': questionnaire_id
-                    }
-                }, {
-                    '$unwind': {
-                        'path': '$questions'
-                    }
-                }, {
-                    '$match': {
-                        'questions.qID': matches[1]
-                    }
-                }, {
-                    '$unset': [
-                        'keywords', 'questionnaireTitle', 'questions.required', 'questions.type'
-                    ]
-                }, {
-                    '$unwind': {
-                        'path': '$questions.options'
-                    }
-                }, {
-                    '$match': {
-                        'questions.options.optID': matches[0]
-                    }
-                }, {
-                    '$project': {
-                        'qtext': '$questions.qtext',
-                        'opttxt': '$questions.options.opttxt'
-                    }
-                }
-            ]))
-
-            question = "\"" + matches_txt[0]['qtext'] + "\""
-            answer = "\"" + matches_txt[0]['opttxt'] + "\""
-
-            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
-                "[*"+matches[0]+"]", answer)
-            questionForm[0]['qtext'] = questionForm[0]['qtext'].replace(
-                "[*"+matches[1]+"]", question)
 
         return render_template("question_radio.html", Question=questionForm[0].get('qtext'), qOptions=qOptions, questionnaire_id=questionnaire_id, qNextIDs=qNextIDs, qDiffOptions=qDiffOptions, question_id=question_id, session_id=session_id)
 
@@ -433,35 +435,5 @@ def questionnaire_test():
     return render_template("main.html", questionnaires=questionnaires, session_id=session_id)
 
 
-@app.route('/submit', methods=['POST'])
-def handle_submit():
-    """
-    print(request)
-    print(request.json)
-    client = MongoClient()
-    db = client.questionnaire
-    collection_name = 'responses'
-    db[collection_name].insert_one(request.json)
-    client.close()
-
-    for i in request.json:
-        print(i, request.json.get(i))
-    input_data = request.json.get('input')
-    # process the data
-    response_data = {'input': input_data}
-    resp = jsonify(response_data)
-    print(resp)
-    return resp
-    """
-    try:
-        jsonschema.validate(request.json, schema)
-        print("Valid JSON")
-        return '{"submission":"Valid"}'
-    except jsonschema.exceptions.ValidationError as e:
-        print("Invalid JSON")
-        return '{"submission":"Invalid"}'
-
-
-
 if __name__ == '__main__':
-    app.run(debug=True, port=9103)
+    app.run("0.0.0.0",debug=True, port=9103)
