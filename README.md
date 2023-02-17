@@ -34,7 +34,7 @@ pip install -r requirements.txt
 ```
 7. Execute
 ```
-flask --app api-backend/QuestionnaireApp.py run -h 127.0.0.1 -p 9103
+python3 api-backend/QuestionnaireApp.py
 ```
 8. Navigate to http://127.0.0.1:9103 to use the frontend
 
