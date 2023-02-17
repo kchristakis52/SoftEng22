@@ -21,7 +21,7 @@
 ## Instructions
 
 1. Clone the repository
-2. Open the folder
+2. Open the folder SoftEng22-21
 3. Make sure that MongoDB Server Service is running and that you have installed MongoDB Command Line Database Tools
 4. Open a terminal and execute: 
 ```

@@ -68,7 +68,7 @@ def test_answer_reset():
 # Admin Post questionnaire
 def test_questionnaire_upd():
     try:
-        response = os.popen('python3 se2221 questionnaire-upd --source ../data/smoking_questionnaire.json','r').read()
+        response = os.popen('python3 se2221 questionnaire-upd --source ../test/smoking_questionnaire.json','r').read()
         assert "OK" in response
     except:
         assert False
@@ -84,7 +84,7 @@ def test_resetall():
 # Admin Post questionnaire after reset
 def test_questionnaire_upd_reset():
     try:
-        response = os.popen('python3 se2221 questionnaire-upd --source ../data/smoking_questionnaire.json','r').read()
+        response = os.popen('python3 se2221 questionnaire-upd --source ../test/smoking_questionnaire.json','r').read()
         assert not("OK" in response)
     except:
         assert False
