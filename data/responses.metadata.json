@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"questionnaireID":{"$numberInt":"1"},"qID":{"$numberInt":"1"},"session":{"$numberInt":"1"}},"name":"questionnaireID_1_qID_1_session_1","unique":true,"sparse":false}],"uuid":"42d246e4ce4f4771aa41741205cf725b","collectionName":"responses","type":"collection"}
